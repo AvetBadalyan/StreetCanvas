@@ -29,6 +29,8 @@ const PlaceItem = (props) => {
     console.log("DELETING...");
   };
 
+  const republicSquareCoords = [40.1792, 44.509];
+
   return (
     <>
       <Modal
@@ -40,7 +42,7 @@ const PlaceItem = (props) => {
         footer={<Button onClick={closeMapHandler}>CLOSE</Button>}
       >
         <div className="map-container">
-          <Map center={props.coordinates} zoom={16} />
+          <Map center={republicSquareCoords} zoom={16} />
         </div>
       </Modal>
       <Modal

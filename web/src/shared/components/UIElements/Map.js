@@ -1,20 +1,26 @@
-import React, { useRef, useEffect } from 'react';
+import React, { useRef, useEffect } from "react";
+import "leaflet/dist/leaflet.css";
+import L from "leaflet";
 
-import './Map.css';
+import "./Map.css";
 
-const Map = props => {
+const Map = (props) => {
   const mapRef = useRef();
-  
   const { center, zoom } = props;
 
   useEffect(() => {
-    const map = new window.google.maps.Map(mapRef.current, {
-      center: center,
-      zoom: zoom
-    });
-  
-    new window.google.maps.Marker({ position: center, map: map });
-  }, [center, zoom]);  
+    const map = L.map(mapRef.current).setView(center, zoom);
+
+    L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+      attribution: "© OpenStreetMap contributors",
+    }).addTo(map);
+
+    L.marker(center).addTo(map);
+
+    return () => {
+      map.remove();
+    };
+  }, [center, zoom]);
 
   return (
     <div
