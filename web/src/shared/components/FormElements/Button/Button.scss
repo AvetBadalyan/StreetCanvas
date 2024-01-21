@@ -1,0 +1,93 @@
+$color_1: white;
+$color_2: #001861;
+$color_3: #979797;
+$border-color_1: #00008b;
+$border-color_2: #830000;
+$border-color_3: #f34343;
+$border-color_4: #ccc;
+
+.button {
+  font: inherit;
+  padding: 0.5rem 1.5rem;
+  border: 1px solid #001861;
+  border-radius: 4px;
+  background: #001861;
+  color: $color_1;
+  cursor: pointer;
+  margin-right: 1rem;
+  text-decoration: none;
+  display: inline-block;
+
+  &:focus {
+    outline: none;
+  }
+
+  &:hover {
+    background: #00008b;
+    border-color: $border-color_1;
+
+    &:disabled {
+      background: #ccc;
+      color: $color_3;
+      border-color: $border-color_4;
+      cursor: not-allowed;
+    }
+  }
+
+  &:active {
+    background: #00008b;
+    border-color: $border-color_1;
+
+    &:disabled {
+      background: #ccc;
+      color: $color_3;
+      border-color: $border-color_4;
+      cursor: not-allowed;
+    }
+  }
+
+  &:disabled {
+    background: #ccc;
+    color: $color_3;
+    border-color: $border-color_4;
+    cursor: not-allowed;
+  }
+}
+
+.button--inverse {
+  background: transparent;
+  color: $color_2;
+
+  &:hover {
+    color: $color_1;
+    background: #001861;
+  }
+
+  &:active {
+    color: $color_1;
+    background: #001861;
+  }
+}
+
+.button--danger {
+  background: #830000;
+  border-color: $border-color_2;
+
+  &:hover {
+    background: #f34343;
+    border-color: $border-color_3;
+  }
+
+  &:active {
+    background: #f34343;
+    border-color: $border-color_3;
+  }
+}
+
+.button--small {
+  font-size: 0.8rem;
+}
+
+.button--big {
+  font-size: 1.5rem;
+}

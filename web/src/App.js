@@ -4,11 +4,11 @@ import Users from "./user/pages/Users";
 import NewPlace from "./places/pages/NewPlace";
 import UserPlaces from "./places/pages/UserPlaces";
 import UpdatePlace from "./places/pages/UpdatePlace";
-import Auth from "./user/pages/Auth";
-import MainNavigation from "./shared/components/Navigation/MainNavigation";
+import MainNavigation from "./shared/components/Navigation/MainNavigation/MainNavigation";
 import { AuthContext } from "./shared/context/auth-context";
 import { BrowserRouter, Navigate, Route, Routes } from "react-router-dom";
 import { useAuth } from "./shared/hooks/auth-hook";
+import Auth from "./user/pages/Auth/Auth";
 
 const App = () => {
   const { token, login, logout, userId } = useAuth();

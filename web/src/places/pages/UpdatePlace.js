@@ -1,11 +1,6 @@
 import React, { useEffect, useState, useContext } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 
-import Input from "../../shared/components/FormElements/Input";
-import Button from "../../shared/components/FormElements/Button";
-import Card from "../../shared/components/UIElements/Card";
-import LoadingSpinner from "../../shared/components/UIElements/LoadingSpinner";
-import ErrorModal from "../../shared/components/UIElements/ErrorModal";
 import {
   VALIDATOR_REQUIRE,
   VALIDATOR_MINLENGTH,
@@ -13,7 +8,12 @@ import {
 import { useForm } from "../../shared/hooks/form-hook";
 import { useHttpClient } from "../../shared/hooks/http-hook";
 import { AuthContext } from "../../shared/context/auth-context";
-import "./PlaceForm.css";
+import "./PlaceForm.scss";
+import LoadingSpinner from "../../shared/components/UIElements/LoadingSpinner/LoadingSpinner";
+import Card from "../../shared/components/UIElements/Card/Card";
+import ErrorModal from "../../shared/components/UIElements/ErrorModal";
+import Input from "../../shared/components/FormElements/Input/Input";
+import Button from "../../shared/components/FormElements/Button/Button";
 
 const UpdatePlace = () => {
   const auth = useContext(AuthContext);
