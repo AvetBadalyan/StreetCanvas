@@ -5,7 +5,6 @@ import "./UserItem.scss";
 import Avatar from "../../../shared/components/UIElements/Avatar/Avatar";
 
 const UserItem = (props) => {
-  console.log(props.image, "image");
   return (
     <li className="user-item">
       <div className="user-item__content">
