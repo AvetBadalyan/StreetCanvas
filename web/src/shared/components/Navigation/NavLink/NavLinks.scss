@@ -35,6 +35,12 @@ $border-color_1: #292929;
     }
   }
 
+  a.active {
+    background: #f8df00;
+    border-color: $border-color_1;
+    color: $color_1;
+  }
+
   button {
     cursor: pointer;
     border: none;
