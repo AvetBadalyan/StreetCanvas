@@ -4,7 +4,7 @@ REST API for **StreetCanvas**, a crowd-mapped atlas of street art. Contributors
 photograph a mural, stencil or paste-up, tag it, and pin it to a shared map by
 street address.
 
-- **Frontend repo:** https://github.com/AvetBadalyan/MERN-practice-frontend
+- **Part of the [StreetCanvas](../README.md) monorepo** — the React app lives in [`web/`](../web)
 - **Stack:** Node · Express · MongoDB (Mongoose) · JWT · Cloudinary · Nominatim
 - **[Design notes](NOTES.md)** — why the non-obvious parts are the way they are
 

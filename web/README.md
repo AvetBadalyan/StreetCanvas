@@ -4,7 +4,7 @@ Frontend for **StreetCanvas**, a crowd-mapped atlas of street art. Browse murals
 stencils and paste-ups on a shared map, filter by tag or art form, and pin the
 ones you discover.
 
-- **API repo:** https://github.com/AvetBadalyan/MERN-practice-backend
+- **Part of the [StreetCanvas](../README.md) monorepo** — the Express API lives in [`api/`](../api)
 - **Stack:** React 18 · React Router 6 · Sass · Leaflet
 - **[Design notes](NOTES.md)** — why the non-obvious parts are the way they are
 
@@ -84,12 +84,20 @@ src/
 
 ## Local setup
 
+Normally you'd start both halves together from the repository root:
+
+```bash
+npm run dev:demo     # api + web, no database setup needed
+```
+
+To run just this app (it expects the API already on `http://localhost:5000`):
+
 ```bash
 npm install
 npm start
 ```
 
-Runs at `http://localhost:3000` and expects the API at `http://localhost:5000`.
+Runs at `http://localhost:3000`.
 
 ### Environment
 
@@ -105,7 +113,7 @@ readable** — never put a secret in one.
 ### Build & deploy
 
 ```bash
-npm run build
+npm run build        # or `npm run build` from the repo root
 firebase deploy      # or any static host
 ```
 

@@ -1,0 +1,5 @@
+# Root-level only. api/ and web/ each keep their own .gitignore.
+node_modules
+.env
+.env.local
+.DS_Store
