@@ -3,6 +3,8 @@ const path = require("path");
 
 const { v4: uuid } = require("uuid");
 
+const HttpError = require("../models/http-error");
+
 /**
  * Where uploaded images go.
  *
@@ -70,8 +72,17 @@ const uploadToCloudinary = (buffer) =>
 
 const saveToDisk = async (file) => {
   const filename = `${uuid()}.${MIME_TYPE_MAP[file.mimetype]}`;
-  await fs.mkdir(LOCAL_UPLOAD_DIR, { recursive: true });
-  await fs.writeFile(path.join(LOCAL_UPLOAD_DIR, filename), file.buffer);
+  try {
+    await fs.mkdir(LOCAL_UPLOAD_DIR, { recursive: true });
+    await fs.writeFile(path.join(LOCAL_UPLOAD_DIR, filename), file.buffer);
+  } catch (err) {
+    // A serverless filesystem is read-only, so this path cannot work in
+    // production. Say so plainly instead of surfacing an EROFS stack trace.
+    throw new HttpError(
+      "Image uploads are not configured on this server. Set the CLOUDINARY_* environment variables.",
+      503
+    );
+  }
   return { url: `/uploads/images/${filename}`, publicId: null };
 };
 

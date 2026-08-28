@@ -79,6 +79,18 @@ invalid regular expression and the endpoint 500s. Regex metacharacters from user
 input are also a denial-of-service risk (a catastrophically backtracking
 pattern), so neutralising them is the right default.
 
+### What happens if the geocoding service is down or rate-limits you?
+
+`util/location.js` calls Nominatim, OpenStreetMap's free geocoder. It's free, needs
+no API key, and asks for two things in return: an identifying `User-Agent`
+(required — requests without one are refused) and roughly one request per second.
+Exceed that and it returns `403`.
+
+The app handles it as a `503` with a readable message rather than a crash, and
+caches recent lookups in memory so browsing the same addresses doesn't re-query.
+For anything with real traffic I'd move to a keyed provider (LocationIQ, Geoapify,
+Mapbox) — the tradeoff is an API key and a quota instead of a shared rate limit.
+
 ### Why does login return the same error for a wrong email and a wrong password?
 
 If "no such user" and "wrong password" gave different responses, anyone could use

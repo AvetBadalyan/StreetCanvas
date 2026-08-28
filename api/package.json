@@ -10,8 +10,7 @@
     "start": "node server.js",
     "dev": "nodemon server.js",
     "dev:demo": "node scripts/dev-server.js",
-    "seed": "node scripts/seed.js",
-    "build": "npm i"
+    "seed": "node scripts/seed.js"
   },
   "author": "Avet Badalyan",
   "license": "ISC",
