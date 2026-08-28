@@ -1,16 +1,27 @@
 const mongoose = require("mongoose");
-const uniqueValidator = require("mongoose-unique-validator");
 
 const Schema = mongoose.Schema;
 
-const userSchema = new Schema({
-  name: { type: String, required: true },
-  email: { type: String, required: true, unique: true },
-  password: { type: String, required: true, minlength: 6 },
-  image: { type: String, required: true },
-  places: [{ type: mongoose.Types.ObjectId, required: true, ref: "Place" }],
-});
+const userSchema = new Schema(
+  {
+    name: { type: String, required: true, trim: true, maxlength: 60 },
+    email: { type: String, required: true, unique: true, lowercase: true },
+    password: { type: String, required: true, minlength: 6 },
+    image: { type: String, required: true },
+    imagePublicId: { type: String, default: null },
+    artworks: [{ type: mongoose.Types.ObjectId, ref: "Artwork" }],
+  },
+  { timestamps: true }
+);
 
-userSchema.plugin(uniqueValidator);
+// Never let a password hash leave the API, whatever the caller selects.
+userSchema.set("toObject", {
+  getters: true,
+  transform: (doc, ret) => {
+    delete ret.password;
+    delete ret.__v;
+    return ret;
+  },
+});
 
 module.exports = mongoose.model("User", userSchema);

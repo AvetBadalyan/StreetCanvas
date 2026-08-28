@@ -1,166 +1,100 @@
-const { validationResult } = require("express-validator");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 
 const HttpError = require("../models/http-error");
 const User = require("../models/user");
+const asyncHandler = require("../util/async-handler");
+const { saveImage, destroyImage } = require("../util/image-store");
 
-const getUsers = async (req, res, next) => {
-  let users;
-  try {
-    users = await User.find({}, "-password");
-  } catch (err) {
-    const error = new HttpError(
-      "Fetching users failed, please try again later.",
-      500
-    );
-    return next(error);
-  }
+// Mirrored by TOKEN_TTL_MS in the frontend's auth-hook, which schedules the
+// automatic sign-out.
+const TOKEN_TTL = "7d";
+
+const signToken = (user) =>
+  jwt.sign({ userId: user.id, email: user.email }, process.env.JWT_KEY, {
+    expiresIn: TOKEN_TTL,
+  });
+
+// The client stores exactly these fields; keeping the shape in one place means
+// signup and login cannot drift apart.
+const authPayload = (user, token) => ({
+  userId: user.id,
+  name: user.name,
+  email: user.email,
+  image: user.image,
+  token,
+});
+
+const getUsers = asyncHandler(async (req, res) => {
+  const users = await User.find({}, "-password").sort({ createdAt: -1 });
   res.json({ users: users.map((user) => user.toObject({ getters: true })) });
-};
+});
 
-const signup = async (req, res, next) => {
-  const errors = validationResult(req);
-  if (!errors.isEmpty()) {
-    return next(
-      new HttpError("Invalid inputs passed, please check your data.", 422)
-    );
+const signup = asyncHandler(async (req, res, next) => {
+  // multer runs ahead of the validators, so an omitted avatar arrives as an
+  // absent `req.file` and would otherwise throw on `req.file.path`.
+  if (!req.file) {
+    return next(new HttpError("A profile photo is required.", 422));
   }
 
   const { name, email, password } = req.body;
 
-  let existingUser;
-  try {
-    existingUser = await User.findOne({ email: email });
-  } catch (err) {
-    const error = new HttpError(
-      "Signing up failed, please try again later.",
-      500
+  if (await User.exists({ email })) {
+    return next(
+      new HttpError("An account with this email already exists.", 422)
     );
-    return next(error);
   }
 
-  if (existingUser) {
-    const error = new HttpError(
-      "User exists already, please login instead.",
-      422
-    );
-    return next(error);
-  }
-
-  let hashedPassword;
-  try {
-    hashedPassword = await bcrypt.hash(password, 12);
-  } catch (err) {
-    const error = new HttpError(
-      "Could not create user, please try again.",
-      500
-    );
-    return next(error);
-  }
+  // Stored only once the email is known to be free, so a rejected signup never
+  // leaves an avatar behind.
+  const image = await saveImage(req.file);
 
   const createdUser = new User({
     name,
     email,
-    image: req.file.path,
-    password: hashedPassword,
-    places: [],
+    image: image.url,
+    imagePublicId: image.publicId,
+    password: await bcrypt.hash(password, 12),
+    artworks: [],
   });
 
   try {
     await createdUser.save();
   } catch (err) {
-    const error = new HttpError(
-      "Signing up failed, please try again later.",
-      500
-    );
-    return next(error);
+    await destroyImage(image);
+    // Two simultaneous signups can both pass the check above; the unique index
+    // is what actually guarantees it.
+    if (err.code === 11000) {
+      return next(
+        new HttpError("An account with this email already exists.", 422)
+      );
+    }
+    throw err;
   }
 
-  let token;
-  try {
-    token = jwt.sign(
-      { userId: createdUser.id, email: createdUser.email },
-      process.env.JWT_KEY,
-      { expiresIn: "1h" }
-    );
-  } catch (err) {
-    const error = new HttpError(
-      "Signing up failed, please try again later.",
-      500
-    );
-    return next(error);
-  }
+  res.status(201).json(authPayload(createdUser, signToken(createdUser)));
+});
 
-  res
-    .status(201)
-    .json({ userId: createdUser.id, email: createdUser.email, token: token });
-};
-
-const login = async (req, res, next) => {
+const login = asyncHandler(async (req, res, next) => {
   const { email, password } = req.body;
 
-  let existingUser;
+  const existingUser = await User.findOne({ email });
 
-  try {
-    existingUser = await User.findOne({ email: email });
-  } catch (err) {
-    const error = new HttpError(
-      "Logging in failed, please try again later.",
-      500
-    );
-    return next(error);
-  }
+  // Same message and status whether the email or the password was wrong, so the
+  // endpoint cannot be used to enumerate registered addresses.
+  const invalidCredentials = () =>
+    next(new HttpError("Invalid credentials, could not log you in.", 401));
 
   if (!existingUser) {
-    const error = new HttpError(
-      "Invalid credentials, could not log you in.",
-      403
-    );
-    return next(error);
+    return invalidCredentials();
   }
 
-  let isValidPassword = false;
-  try {
-    isValidPassword = await bcrypt.compare(password, existingUser.password);
-  } catch (err) {
-    const error = new HttpError(
-      "Could not log you in, please check your credentials and try again.",
-      500
-    );
-    return next(error);
-  }
-
+  const isValidPassword = await bcrypt.compare(password, existingUser.password);
   if (!isValidPassword) {
-    const error = new HttpError(
-      "Invalid credentials, could not log you in.",
-      403
-    );
-    return next(error);
+    return invalidCredentials();
   }
 
-  let token;
-  try {
-    token = jwt.sign(
-      { userId: existingUser.id, email: existingUser.email },
-      process.env.JWT_KEY,
-      { expiresIn: "1h" }
-    );
-  } catch (err) {
-    const error = new HttpError(
-      "Logging in failed, please try again later.",
-      500
-    );
-    return next(error);
-  }
+  res.json(authPayload(existingUser, signToken(existingUser)));
+});
 
-  res.json({
-    userId: existingUser.id,
-    email: existingUser.email,
-    token: token,
-  });
-};
-
-exports.getUsers = getUsers;
-exports.signup = signup;
-exports.login = login;
+module.exports = { getUsers, signup, login };
