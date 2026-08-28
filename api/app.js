@@ -67,6 +67,29 @@ app.use(express.json({ limit: "1mb" }));
 // upload goes to Cloudinary instead.
 app.use("/uploads/images", express.static(path.join(LOCAL_UPLOAD_DIR)));
 
+// Opening the API's root in a browser is a reasonable thing to do, so answer
+// with a short index rather than a bare 404.
+app.get("/", (req, res) => {
+  res.json({
+    name: "StreetCanvas API",
+    description: "REST API for StreetCanvas, a crowd-mapped atlas of public art.",
+    source: "https://github.com/AvetBadalyan/StreetCanvas",
+    health: "/api/health",
+    endpoints: {
+      "GET /api/artworks": "Explore feed. Query: q, tag, form, sort, page, limit",
+      "GET /api/artworks/facets": "Tag and art-form counts for the filter chips",
+      "GET /api/artworks/:id": "A single artwork",
+      "GET /api/artworks/user/:id": "One contributor's artworks",
+      "GET /api/users": "All contributors",
+      "POST /api/users/signup": "multipart: name, email, password, image",
+      "POST /api/users/login": "json: email, password",
+      "POST /api/artworks": "Authenticated. multipart, see the README",
+      "PATCH /api/artworks/:id": "Authenticated, owner only",
+      "DELETE /api/artworks/:id": "Authenticated, owner only",
+    },
+  });
+});
+
 /**
  * Liveness probe, deliberately declared before the database guard so it answers
  * while the connection is still being established. The frontend calls this on
