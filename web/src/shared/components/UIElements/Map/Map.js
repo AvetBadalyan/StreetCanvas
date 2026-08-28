@@ -4,11 +4,13 @@ import "leaflet/dist/leaflet.css";
 
 import "./Map.scss";
 
-// A dark basemap so the map does not glare against the rest of the UI.
-const TILE_URL =
-  "https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png";
+// Plain OpenStreetMap tiles: free, no API key, no signup. The dark look comes
+// from a CSS filter on the tile layer (see index.scss) rather than from a
+// themed tile provider - CARTO's dark basemap now requires a key, and the
+// others that look good all want an account.
+const TILE_URL = "https://tile.openstreetmap.org/{z}/{x}/{y}.png";
 const TILE_ATTRIBUTION =
-  '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> &copy; <a href="https://carto.com/attributions">CARTO</a>';
+  '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors';
 
 // Leaflet's default marker points at PNGs resolved relative to the CSS, which
 // webpack does not rewrite - the usual result is an invisible marker. A divIcon
