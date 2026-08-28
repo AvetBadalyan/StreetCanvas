@@ -10,7 +10,8 @@
     "start": "node server.js",
     "dev": "nodemon server.js",
     "dev:demo": "node scripts/dev-server.js",
-    "seed": "node scripts/seed.js"
+    "seed": "node scripts/seed.js",
+    "fetch:art": "node scripts/fetch-public-art.js"
   },
   "author": "Avet Badalyan",
   "license": "ISC",

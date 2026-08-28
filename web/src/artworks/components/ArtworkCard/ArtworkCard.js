@@ -152,6 +152,17 @@ const ArtworkCard = ({ artwork, onDeleted, onSelectTag }) => {
           )}
 
           <div className="artwork-card__actions">
+            {/* Imported records credit where they came from. */}
+            {artwork.sourceUrl && (
+              <Button
+                variant="quiet"
+                size="small"
+                href={artwork.sourceUrl}
+                title={`View this record on ${artwork.sourceName || "the source"}`}
+              >
+                Source
+              </Button>
+            )}
             <Button variant="quiet" size="small" onClick={() => setShowMap(true)}>
               Map
             </Button>

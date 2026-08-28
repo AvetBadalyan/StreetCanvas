@@ -20,7 +20,7 @@ import "./Auth.scss";
 // A read-only-ish account seeded by `npm run seed`, so anyone reviewing this
 // project can get inside without inventing credentials first.
 const DEMO_CREDENTIALS = {
-  email: "maya@streetcanvas.demo",
+  email: "demo@streetcanvas.demo",
   password: "demo1234",
 };
 

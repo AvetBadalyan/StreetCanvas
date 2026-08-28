@@ -5,13 +5,14 @@ const Schema = mongoose.Schema;
 // Closed vocabulary so the explore filters stay meaningful - free-text tags
 // cover everything else.
 const ART_FORMS = [
+  "sculpture",
+  "statue",
+  "monument",
+  "memorial",
   "mural",
-  "stencil",
-  "graffiti",
-  "paste-up",
-  "sticker",
-  "mosaic",
+  "fountain",
   "installation",
+  "mosaic",
   "other",
 ];
 
@@ -37,6 +38,10 @@ const artworkSchema = new Schema(
     // Null for locally stored uploads.
     imagePublicId: { type: String, default: null },
     address: { type: String, required: true, trim: true },
+    // Where an imported record came from, so seeded entries can credit their
+    // source. Null for anything a contributor added through the app.
+    sourceName: { type: String, default: null },
+    sourceUrl: { type: String, default: null },
     location: {
       lat: { type: Number, required: true },
       lng: { type: Number, required: true },

@@ -79,6 +79,31 @@ invalid regular expression and the endpoint 500s. Regex metacharacters from user
 input are also a denial-of-service risk (a catastrophically backtracking
 pattern), so neutralising them is the right default.
 
+### Where does the catalogue data come from?
+
+Wikidata, via its public SPARQL endpoint. `scripts/wikidata.js` asks for items
+that are a sculpture / statue / monument / memorial / mural / fountain /
+installation **and** have both coordinates and a photo on Wikimedia Commons,
+then maps each result onto the `Artwork` schema — composing a readable
+description out of the structured fields.
+
+Two things I'd point at if asked:
+
+- **One query per art form, not one big query.** Asking for all seven types at
+  once reliably times out on the shared endpoint, and querying separately also
+  produces a balanced spread across forms instead of whichever type sorts first.
+  Each type retries with backoff and is skipped if it keeps failing — a partial
+  catalogue beats none.
+- **The result is committed to the repo** as `scripts/public-art.json`, and
+  `npm run seed` reads that file rather than calling Wikidata. Seeding is
+  therefore deterministic, offline-capable and fast, and the dataset is
+  reviewable in a diff. `npm run fetch:art` refreshes it when I actually want
+  new content.
+
+Licensing: Wikidata is CC0, Commons images are freely licensed, and both are
+credited in the app's footer. Each artwork also stores its `sourceUrl` so the
+UI can link back to the original record.
+
 ### What happens if the geocoding service is down or rate-limits you?
 
 `util/location.js` calls Nominatim, OpenStreetMap's free geocoder. It's free, needs

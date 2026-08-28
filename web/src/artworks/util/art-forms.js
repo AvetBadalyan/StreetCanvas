@@ -2,13 +2,14 @@
 // of truth and rejects anything outside it. Kept as a single list here so the
 // filter bar and the create/edit form cannot drift apart from each other.
 export const ART_FORMS = [
+  { value: "sculpture", label: "Sculpture" },
+  { value: "statue", label: "Statue" },
+  { value: "monument", label: "Monument" },
+  { value: "memorial", label: "Memorial" },
   { value: "mural", label: "Mural" },
-  { value: "stencil", label: "Stencil" },
-  { value: "graffiti", label: "Graffiti" },
-  { value: "paste-up", label: "Paste-up" },
-  { value: "sticker", label: "Sticker" },
-  { value: "mosaic", label: "Mosaic" },
+  { value: "fountain", label: "Fountain" },
   { value: "installation", label: "Installation" },
+  { value: "mosaic", label: "Mosaic" },
   { value: "other", label: "Other" },
 ];
 

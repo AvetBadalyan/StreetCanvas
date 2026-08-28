@@ -152,11 +152,11 @@ const Explore = () => {
 
       <header className="page__header explore__header">
         <div>
-          <h1>Street art, mapped by the people who found it</h1>
+          <h1>The art you walk past every day</h1>
           <p>
             {facets.total > 0
-              ? `${facets.total} pieces catalogued across the world - murals, stencils, paste-ups and everything in between.`
-              : "A crowd-mapped atlas of murals, stencils and paste-ups."}
+              ? `${facets.total} sculptures, murals, monuments and fountains from public spaces around the world - each with its artist, its date and the story behind it.`
+              : "An atlas of public art: sculptures, murals, monuments and fountains from streets and squares around the world."}
           </p>
         </div>
         {auth.isLoggedIn && (

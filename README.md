@@ -1,10 +1,14 @@
 # StreetCanvas
 
-A crowd-mapped atlas of street art. Photograph a mural, stencil or paste-up, tag
-it, and pin it to a shared map by street address — then search, filter and browse
-what everyone else has found.
+An atlas of public art — the sculptures, murals, monuments and fountains you walk
+past every day. Search them by artist, city or material, see them on a map, and
+add the ones you find yourself.
 
-**Live demo:** _(pending deploy)_ · **Demo login:** `maya@streetcanvas.demo` / `demo1234`
+The catalogue is seeded from **Wikidata**, so the content is real: actual
+artworks with their actual sculptors, dates and materials, photographed by
+Wikimedia Commons contributors.
+
+**Live demo:** https://streetcanvas.vercel.app · **Demo login:** `demo@streetcanvas.demo` / `demo1234`
 
 <!-- Add a screenshot here once deployed - it is the first thing anyone looks at. -->
 
@@ -39,12 +43,17 @@ npm run dev
 | `npm run dev` | Both servers, API against the database in `api/.env` |
 | `npm run dev:demo` | Both servers, API against a throwaway in-memory database |
 | `npm run build` | Production build of the web app |
-| `npm run seed` | Load demo content into the configured database |
+| `npm run seed` | Load the bundled catalogue into the configured database |
+| `npm run fetch:art` | Re-download the catalogue from Wikidata (rarely needed) |
 
 ---
 
 ## What's in it
 
+- **Real catalogue data** — ~90 artworks imported from Wikidata's SPARQL
+  endpoint and normalised into the app's schema, each linking back to its source
+  record. Cached in the repo (`api/scripts/public-art.json`) so seeding is
+  deterministic and needs no network.
 - **Explore feed** — search by title, artist, city or tag; filter by tag and art
   form with live counts; sort and paginate. Filter state lives in the URL, so any
   view is linkable and the back button works.
