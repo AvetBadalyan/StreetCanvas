@@ -1,0 +1,176 @@
+@use "./styles/tokens";
+@use "./styles/mixins" as *;
+
+// Fonts are linked from index.html rather than @imported here: Sass emits this
+// file's rules before a trailing CSS @import, and browsers ignore an @import
+// that follows a rule.
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  font-family: var(--font-body);
+  -webkit-font-smoothing: antialiased;
+  scroll-behavior: smooth;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  color: var(--text);
+  background-color: var(--bg);
+  background-image: var(--bg-gradient);
+  background-attachment: fixed;
+  font-size: 1rem;
+  line-height: 1.6;
+}
+
+h1,
+h2,
+h3,
+h4 {
+  font-family: var(--font-display);
+  line-height: 1.2;
+  margin: 0;
+}
+
+a {
+  color: var(--accent);
+}
+
+button,
+input,
+textarea,
+select {
+  font-family: inherit;
+}
+
+:focus-visible {
+  @include focus-ring;
+}
+
+main {
+  padding-top: var(--header-height);
+  min-height: 100vh;
+}
+
+.page {
+  width: 100%;
+  max-width: var(--content-max);
+  margin: 0 auto;
+  padding: 2rem 1rem 4rem;
+}
+
+.page--narrow {
+  max-width: 44rem;
+}
+
+.page__header {
+  margin-bottom: 1.75rem;
+
+  h1 {
+    font-size: clamp(1.75rem, 4vw, 2.5rem);
+    letter-spacing: -0.02em;
+  }
+
+  p {
+    margin: 0.5rem 0 0;
+    color: var(--text-muted);
+    max-width: 44rem;
+  }
+}
+
+.center {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+}
+
+// Visible only to screen readers.
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+@keyframes shimmer {
+  0% {
+    background-position: 200% 0;
+  }
+  100% {
+    background-position: -200% 0;
+  }
+}
+
+// --- Route/drawer transitions ---------------------------------------------
+
+.slide-in-left-enter {
+  transform: translateX(-100%);
+}
+
+.slide-in-left-enter-active {
+  transform: translateX(0);
+  opacity: 1;
+  transition: all 220ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.slide-in-left-exit {
+  transform: translateX(0);
+  opacity: 1;
+}
+
+.slide-in-left-exit-active {
+  transform: translateX(-100%);
+  opacity: 0;
+  transition: all 200ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+// --- Leaflet overrides -----------------------------------------------------
+// The default light chrome fights the dark UI.
+
+.leaflet-container {
+  background: var(--surface);
+  font-family: var(--font-body);
+}
+
+.leaflet-popup-content-wrapper,
+.leaflet-popup-tip {
+  background: var(--surface-raised);
+  color: var(--text);
+  box-shadow: var(--shadow);
+}
+
+.leaflet-popup-content {
+  margin: 0.75rem 0.9rem;
+  font-size: 0.875rem;
+}
+
+.leaflet-control-attribution {
+  background: rgba(18, 16, 14, 0.8) !important;
+  color: var(--text-subtle) !important;
+
+  a {
+    color: var(--text-muted) !important;
+  }
+}
+
+.leaflet-bar a {
+  background: var(--surface-raised);
+  color: var(--text);
+  border-bottom-color: var(--border);
+
+  &:hover {
+    background: var(--surface-hover);
+    color: var(--accent);
+  }
+}

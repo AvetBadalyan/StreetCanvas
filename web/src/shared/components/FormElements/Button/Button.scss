@@ -1,0 +1,103 @@
+@use "../../../../styles/mixins" as *;
+
+.button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  font: inherit;
+  font-weight: 600;
+  letter-spacing: 0.01em;
+  border: 1px solid transparent;
+  border-radius: var(--radius);
+  cursor: pointer;
+  text-decoration: none;
+  white-space: nowrap;
+  transition: background var(--transition), border-color var(--transition),
+    color var(--transition), transform var(--transition);
+
+  &:active:not(:disabled) {
+    transform: translateY(1px);
+  }
+
+  &:disabled {
+    cursor: not-allowed;
+    opacity: 0.45;
+  }
+}
+
+// --- Sizes ------------------------------------------------------------------
+
+.button--small {
+  padding: 0.35rem 0.75rem;
+  font-size: 0.8125rem;
+}
+
+.button--medium {
+  padding: 0.6rem 1.15rem;
+  font-size: 0.9375rem;
+}
+
+.button--large {
+  padding: 0.8rem 1.6rem;
+  font-size: 1rem;
+}
+
+.button--full {
+  width: 100%;
+}
+
+// --- Variants ---------------------------------------------------------------
+
+.button--primary {
+  background: var(--accent);
+  color: var(--accent-contrast);
+
+  &:hover:not(:disabled) {
+    background: var(--accent-hover);
+  }
+}
+
+.button--secondary {
+  background: var(--surface-hover);
+  border-color: var(--border-strong);
+  color: var(--text);
+
+  &:hover:not(:disabled) {
+    border-color: var(--accent-border);
+    color: var(--accent);
+  }
+}
+
+.button--ghost {
+  background: transparent;
+  border-color: var(--border-strong);
+  color: var(--text-muted);
+
+  &:hover:not(:disabled) {
+    background: var(--surface-hover);
+    color: var(--text);
+  }
+}
+
+.button--quiet {
+  background: transparent;
+  color: var(--text-muted);
+  padding-inline: 0.5rem;
+
+  &:hover:not(:disabled) {
+    color: var(--accent);
+  }
+}
+
+.button--danger {
+  background: var(--danger-soft);
+  border-color: rgba(239, 68, 68, 0.4);
+  color: var(--danger-hover);
+
+  &:hover:not(:disabled) {
+    background: var(--danger);
+    color: #fff;
+    border-color: var(--danger);
+  }
+}

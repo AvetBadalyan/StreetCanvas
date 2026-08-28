@@ -1,0 +1,88 @@
+.field {
+  margin-bottom: 1.25rem;
+}
+
+.field__label {
+  display: block;
+  font-size: 0.8125rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  margin-bottom: 0.4rem;
+}
+
+.field input,
+.field textarea,
+.field select {
+  display: block;
+  width: 100%;
+  font: inherit;
+  color: var(--text);
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 0.65rem 0.8rem;
+  transition: border-color var(--transition), background var(--transition),
+    box-shadow var(--transition);
+
+  &::placeholder {
+    color: var(--text-subtle);
+  }
+
+  &:hover {
+    border-color: var(--border-strong);
+  }
+
+  &:focus {
+    outline: none;
+    border-color: var(--accent);
+    box-shadow: 0 0 0 3px var(--accent-soft);
+  }
+}
+
+.field textarea {
+  resize: vertical;
+  min-height: 6rem;
+}
+
+.field select {
+  cursor: pointer;
+  appearance: none;
+  // Chevron drawn inline so no icon asset or extra request is needed.
+  background-image: linear-gradient(45deg, transparent 50%, var(--text-muted) 50%),
+    linear-gradient(135deg, var(--text-muted) 50%, transparent 50%);
+  background-position: calc(100% - 1.1rem) 55%, calc(100% - 0.75rem) 55%;
+  background-size: 6px 6px, 6px 6px;
+  background-repeat: no-repeat;
+  padding-right: 2.25rem;
+
+  option {
+    background: var(--surface-raised);
+    color: var(--text);
+  }
+}
+
+.field__help {
+  margin: 0.4rem 0 0;
+  min-height: 1.1rem;
+  font-size: 0.8125rem;
+  color: var(--text-subtle);
+}
+
+.field--invalid {
+  input,
+  textarea,
+  select {
+    border-color: var(--danger);
+    background: var(--danger-soft);
+
+    &:focus {
+      box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.18);
+    }
+  }
+
+  .field__help {
+    color: var(--danger-hover);
+  }
+}

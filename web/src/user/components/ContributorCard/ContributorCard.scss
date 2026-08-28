@@ -1,0 +1,42 @@
+.contributor-card {
+  a {
+    display: flex;
+    align-items: center;
+    gap: 0.9rem;
+    padding: 1rem;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    text-decoration: none;
+    color: var(--text);
+    transition: border-color var(--transition), transform var(--transition);
+
+    &:hover {
+      border-color: var(--accent-border);
+      transform: translateY(-2px);
+    }
+  }
+}
+
+.contributor-card__avatar {
+  width: 3rem;
+  height: 3rem;
+}
+
+.contributor-card__info {
+  min-width: 0;
+
+  h2 {
+    font-size: 1rem;
+    letter-spacing: -0.01em;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  p {
+    margin: 0.15rem 0 0;
+    font-size: 0.8125rem;
+    color: var(--accent);
+  }
+}
