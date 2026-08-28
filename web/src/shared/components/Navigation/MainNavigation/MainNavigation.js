@@ -1,48 +1,56 @@
-import React, { useState } from "react";
-import { Link } from "react-router-dom";
+import React, { useState, useEffect } from "react";
+import { Link, useLocation } from "react-router-dom";
 
-import MainHeader from "../MainHeader/MainHeader";
 import NavLinks from "../NavLink/NavLinks";
 import SideDrawer from "../SideDrawer/SideDrawer";
 import Backdrop from "../../UIElements/Backdrop/Backdrop";
 import "./MainNavigation.scss";
 
-const MainNavigation = (props) => {
+const MainNavigation = () => {
   const [drawerIsOpen, setDrawerIsOpen] = useState(false);
+  const location = useLocation();
 
-  const openDrawerHandler = () => {
-    setDrawerIsOpen(true);
-  };
-
-  const closeDrawerHandler = () => {
-    setDrawerIsOpen(false);
-  };
+  // Navigating from inside the drawer should close it, otherwise it stays open
+  // over the page the visitor just asked for.
+  useEffect(() => setDrawerIsOpen(false), [location.pathname]);
 
   return (
     <>
-      {drawerIsOpen && <Backdrop onClick={closeDrawerHandler} />}
-      <SideDrawer show={drawerIsOpen} onClick={closeDrawerHandler}>
-        <nav className="main-navigation__drawer-nav">
+      {drawerIsOpen && <Backdrop onClick={() => setDrawerIsOpen(false)} />}
+
+      <SideDrawer show={drawerIsOpen} onClick={() => setDrawerIsOpen(false)}>
+        <nav className="main-nav__drawer">
           <NavLinks />
         </nav>
       </SideDrawer>
 
-      <MainHeader>
-        <button
-          className="main-navigation__menu-btn"
-          onClick={openDrawerHandler}
-        >
-          <span />
-          <span />
-          <span />
-        </button>
-        <h1 className="main-navigation__title">
-          <Link to="/">Favorite Places</Link>
-        </h1>
-        <nav className="main-navigation__header-nav">
-          <NavLinks />
-        </nav>
-      </MainHeader>
+      <header className="main-header">
+        <div className="main-header__inner">
+          <button
+            className="main-nav__menu-btn"
+            onClick={() => setDrawerIsOpen(true)}
+            aria-label="Open menu"
+            aria-expanded={drawerIsOpen}
+          >
+            <span />
+            <span />
+            <span />
+          </button>
+
+          <Link className="main-nav__brand" to="/">
+            <span className="main-nav__mark" aria-hidden="true">
+              SC
+            </span>
+            <span className="main-nav__wordmark">
+              Street<strong>Canvas</strong>
+            </span>
+          </Link>
+
+          <nav className="main-nav__desktop">
+            <NavLinks />
+          </nav>
+        </div>
+      </header>
     </>
   );
 };

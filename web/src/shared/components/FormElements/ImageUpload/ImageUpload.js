@@ -1,65 +1,122 @@
-import React, { useRef, useState, useEffect } from "react";
+import React, { useRef, useState, useEffect, useId } from "react";
 
 import Button from "../Button/Button";
 import "./ImageUpload.scss";
 
-const ImageUpload = (props) => {
-  const [file, setFile] = useState();
-  const [previewUrl, setPreviewUrl] = useState();
-  const [isValid, setIsValid] = useState(false);
+// Kept in step with the API, which rejects anything larger. Checking here too
+// means a visitor on a slow connection is told immediately instead of after a
+// four-megabyte upload.
+const MAX_BYTES = 4 * 1024 * 1024;
+const ACCEPTED = ["image/png", "image/jpeg", "image/jpg", "image/webp"];
+
+const formatSize = (bytes) => {
+  const mb = bytes / (1024 * 1024);
+  return `${Number.isInteger(mb) ? mb : mb.toFixed(1)} MB`;
+};
+
+const ImageUpload = ({ id, label = "Photo", hint, onInput }) => {
+  const [file, setFile] = useState(null);
+  const [previewUrl, setPreviewUrl] = useState(null);
+  const [error, setError] = useState("");
+  const [isDragging, setIsDragging] = useState(false);
 
   const filePickerRef = useRef();
+  const fieldId = useId();
 
   useEffect(() => {
     if (!file) {
+      setPreviewUrl(null);
       return;
     }
-    const fileReader = new FileReader();
-    fileReader.onload = () => {
-      setPreviewUrl(fileReader.result);
-    };
-    fileReader.readAsDataURL(file);
+    // Object URLs are cheaper than FileReader and easy to release, which
+    // matters when someone swaps the photo a few times.
+    const url = URL.createObjectURL(file);
+    setPreviewUrl(url);
+    return () => URL.revokeObjectURL(url);
   }, [file]);
 
-  const pickedHandler = (event) => {
-    let pickedFile;
-    let fileIsValid = isValid;
-    if (event.target.files && event.target.files.length === 1) {
-      pickedFile = event.target.files[0];
-      setFile(pickedFile);
-      setIsValid(true);
-      fileIsValid = true;
-    } else {
-      setIsValid(false);
-      fileIsValid = false;
+  const applyFile = (picked) => {
+    if (!picked) return;
+
+    if (!ACCEPTED.includes(picked.type)) {
+      setError("That file type is not supported. Use JPG, PNG or WEBP.");
+      setFile(null);
+      onInput(id, null, false);
+      return;
     }
-    props.onInput(props.id, pickedFile, fileIsValid);
+
+    if (picked.size > MAX_BYTES) {
+      setError(
+        `That image is ${formatSize(picked.size)}. Please use one under ${formatSize(MAX_BYTES)}.`
+      );
+      setFile(null);
+      onInput(id, null, false);
+      return;
+    }
+
+    setError("");
+    setFile(picked);
+    onInput(id, picked, true);
   };
 
-  const pickImageHandler = () => {
-    filePickerRef.current.click();
+  const dropHandler = (event) => {
+    event.preventDefault();
+    setIsDragging(false);
+    applyFile(event.dataTransfer.files?.[0]);
   };
 
   return (
-    <div className="form-control">
+    <div className={`field image-upload ${error ? "field--invalid" : ""}`}>
+      <label className="field__label" htmlFor={fieldId}>
+        {label}
+      </label>
+
       <input
-        id={props.id}
+        id={fieldId}
         ref={filePickerRef}
-        style={{ display: "none" }}
+        className="sr-only"
         type="file"
-        accept=".jpg,.png,.jpeg"
-        onChange={pickedHandler}
+        accept={ACCEPTED.join(",")}
+        onChange={(event) => applyFile(event.target.files?.[0])}
       />
-      <div className={`image-upload ${props.center && "center"}`}>
-        <div className="image-upload__preview">
-          {previewUrl && <img src={previewUrl} alt="Preview" />}
-          {!previewUrl && <p>Please pick an image.</p>}
-        </div>
-        <Button type="button" onClick={pickImageHandler}>
-          PICK IMAGE
-        </Button>
+
+      <div
+        className={`image-upload__dropzone ${
+          isDragging ? "image-upload__dropzone--active" : ""
+        } ${previewUrl ? "image-upload__dropzone--filled" : ""}`}
+        onDragOver={(event) => {
+          event.preventDefault();
+          setIsDragging(true);
+        }}
+        onDragLeave={() => setIsDragging(false)}
+        onDrop={dropHandler}
+      >
+        {previewUrl ? (
+          <img src={previewUrl} alt="Selected artwork preview" />
+        ) : (
+          <div className="image-upload__placeholder">
+            <span className="image-upload__icon" aria-hidden="true">
+              &#9634;
+            </span>
+            <p>Drag a photo here</p>
+            <span>JPG, PNG or WEBP &middot; up to {formatSize(MAX_BYTES)}</span>
+          </div>
+        )}
       </div>
-      {!isValid && <p>{props.errorText}</p>}
+
+      <div className="image-upload__actions">
+        <Button
+          type="button"
+          variant={previewUrl ? "ghost" : "secondary"}
+          size="small"
+          onClick={() => filePickerRef.current.click()}
+        >
+          {previewUrl ? "Choose a different photo" : "Browse files"}
+        </Button>
+        {file && <span className="image-upload__meta">{file.name}</span>}
+      </div>
+
+      <p className="field__help">{error || hint}</p>
     </div>
   );
 };

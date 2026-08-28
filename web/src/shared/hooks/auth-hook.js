@@ -1,59 +1,74 @@
-import { useState, useCallback, useEffect } from "react";
+import { useState, useCallback, useEffect, useRef } from "react";
 
-let logoutTimer;
+const STORAGE_KEY = "streetcanvas.auth";
+// Must stay in step with the API's token TTL.
+const TOKEN_TTL_MS = 7 * 24 * 60 * 60 * 1000;
 
 export const useAuth = () => {
-  const [token, setToken] = useState(false);
-  const [tokenExpirationDate, setTokenExpirationDate] = useState();
-  const [userId, setUserId] = useState(false);
+  const [token, setToken] = useState(null);
+  const [user, setUser] = useState(null);
+  const [expiresAt, setExpiresAt] = useState(null);
+  // Distinguishes "not signed in" from "not yet read from localStorage", so
+  // guarded routes do not bounce a returning visitor to the login page during
+  // the first render.
+  const [isRestoring, setIsRestoring] = useState(true);
 
-  const login = useCallback((uid, token, expirationDate) => {
-    setToken(token);
-    setUserId(uid);
-    const tokenExpirationDate =
-      expirationDate || new Date(new Date().getTime() + 1000 * 60 * 60);
-    setTokenExpirationDate(tokenExpirationDate);
+  const logoutTimer = useRef();
+
+  const login = useCallback((userData, authToken, expiration) => {
+    const expiry = expiration || new Date(Date.now() + TOKEN_TTL_MS);
+
+    setToken(authToken);
+    setUser(userData);
+    setExpiresAt(expiry);
+
     localStorage.setItem(
-      "userData",
+      STORAGE_KEY,
       JSON.stringify({
-        userId: uid,
-        token: token,
-        expiration: tokenExpirationDate.toISOString(),
+        user: userData,
+        token: authToken,
+        expiration: expiry.toISOString(),
       })
     );
   }, []);
 
   const logout = useCallback(() => {
     setToken(null);
-    setTokenExpirationDate(null);
-    setUserId(null);
-    localStorage.removeItem("userData");
+    setUser(null);
+    setExpiresAt(null);
+    localStorage.removeItem(STORAGE_KEY);
   }, []);
 
+  // Sign the user out exactly when the token stops being accepted, rather than
+  // letting them hit a wall of 401s.
   useEffect(() => {
-    if (token && tokenExpirationDate) {
-      const remainingTime =
-        tokenExpirationDate.getTime() - new Date().getTime();
-      logoutTimer = setTimeout(logout, remainingTime);
-    } else {
-      clearTimeout(logoutTimer);
+    clearTimeout(logoutTimer.current);
+    if (token && expiresAt) {
+      const remaining = expiresAt.getTime() - Date.now();
+      if (remaining <= 0) {
+        logout();
+      } else {
+        logoutTimer.current = setTimeout(logout, remaining);
+      }
     }
-  }, [token, logout, tokenExpirationDate]);
+    return () => clearTimeout(logoutTimer.current);
+  }, [token, expiresAt, logout]);
 
   useEffect(() => {
-    const storedData = JSON.parse(localStorage.getItem("userData"));
-    if (
-      storedData &&
-      storedData.token &&
-      new Date(storedData.expiration) > new Date()
-    ) {
-      login(
-        storedData.userId,
-        storedData.token,
-        new Date(storedData.expiration)
-      );
+    try {
+      const stored = JSON.parse(localStorage.getItem(STORAGE_KEY));
+      if (stored?.token && new Date(stored.expiration) > new Date()) {
+        login(stored.user, stored.token, new Date(stored.expiration));
+      } else if (stored) {
+        localStorage.removeItem(STORAGE_KEY);
+      }
+    } catch {
+      // Corrupt or partially written entry - start clean rather than crash the
+      // whole app on boot.
+      localStorage.removeItem(STORAGE_KEY);
     }
+    setIsRestoring(false);
   }, [login]);
 
-  return { token, login, logout, userId };
+  return { token, user, userId: user?.userId ?? null, login, logout, isRestoring };
 };

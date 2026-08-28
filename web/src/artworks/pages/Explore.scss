@@ -1,0 +1,21 @@
+@use "../../styles/mixins" as *;
+
+.explore__header {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+
+  @include desktop {
+    flex-direction: row;
+    align-items: flex-end;
+    justify-content: space-between;
+  }
+}
+
+.explore__map {
+  height: min(70vh, 34rem);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+}
+

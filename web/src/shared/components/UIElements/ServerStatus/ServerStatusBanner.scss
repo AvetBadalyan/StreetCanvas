@@ -1,0 +1,45 @@
+.server-banner {
+  position: sticky;
+  top: var(--header-height);
+  z-index: 15;
+  background: var(--accent-soft);
+  border-bottom: 1px solid var(--accent-border);
+}
+
+.server-banner__inner {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  max-width: var(--content-max);
+  margin: 0 auto;
+  padding: 0.65rem 1rem;
+
+  p {
+    margin: 0;
+    font-size: 0.875rem;
+    color: var(--accent-hover);
+  }
+}
+
+.server-banner__progress {
+  height: 2px;
+  background: transparent;
+
+  span {
+    display: block;
+    height: 100%;
+    background: var(--accent);
+    transition: width 250ms linear;
+  }
+}
+
+.server-banner--offline {
+  background: var(--danger-soft);
+  border-bottom-color: rgba(239, 68, 68, 0.4);
+
+  p {
+    color: var(--danger-hover);
+  }
+}

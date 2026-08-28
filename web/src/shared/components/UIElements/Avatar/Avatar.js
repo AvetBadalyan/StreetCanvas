@@ -1,15 +1,25 @@
-import React from "react";
+import React, { useState } from "react";
 
+import { resolveImageUrl } from "../../../api/client";
 import "./Avatar.scss";
 
-const Avatar = (props) => {
+/**
+ * Falls back to the contributor's initial when the image is missing or fails to
+ * load - seeded and legacy rows can both point at images that no longer exist.
+ */
+const Avatar = ({ image, alt = "", style, className = "" }) => {
+  const [failed, setFailed] = useState(false);
+  const src = resolveImageUrl(image);
+
   return (
-    <div className={`avatar ${props.className}`} style={props.style}>
-      <img
-        src={props.image}
-        alt={props.alt}
-        style={{ width: props.width, height: props.width }}
-      />
+    <div className={`avatar ${className}`} style={style}>
+      {src && !failed ? (
+        <img src={src} alt={alt} loading="lazy" onError={() => setFailed(true)} />
+      ) : (
+        <span className="avatar__fallback" aria-hidden="true">
+          {alt.trim().charAt(0) || "?"}
+        </span>
+      )}
     </div>
   );
 };

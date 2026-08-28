@@ -1,93 +1,103 @@
-$color_1: white;
-$color_2: #001861;
-$color_3: #979797;
-$border-color_1: #00008b;
-$border-color_2: #830000;
-$border-color_3: #f34343;
-$border-color_4: #ccc;
+@use "../../../../styles/mixins" as *;
 
 .button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
   font: inherit;
-  padding: 0.5rem 1.5rem;
-  border: 1px solid #001861;
-  border-radius: 4px;
-  background: #001861;
-  color: $color_1;
+  font-weight: 600;
+  letter-spacing: 0.01em;
+  border: 1px solid transparent;
+  border-radius: var(--radius);
   cursor: pointer;
-  margin-right: 1rem;
   text-decoration: none;
-  display: inline-block;
+  white-space: nowrap;
+  transition: background var(--transition), border-color var(--transition),
+    color var(--transition), transform var(--transition);
 
-  &:focus {
-    outline: none;
-  }
-
-  &:hover {
-    background: #00008b;
-    border-color: $border-color_1;
-
-    &:disabled {
-      background: #ccc;
-      color: $color_3;
-      border-color: $border-color_4;
-      cursor: not-allowed;
-    }
-  }
-
-  &:active {
-    background: #00008b;
-    border-color: $border-color_1;
-
-    &:disabled {
-      background: #ccc;
-      color: $color_3;
-      border-color: $border-color_4;
-      cursor: not-allowed;
-    }
+  &:active:not(:disabled) {
+    transform: translateY(1px);
   }
 
   &:disabled {
-    background: #ccc;
-    color: $color_3;
-    border-color: $border-color_4;
     cursor: not-allowed;
+    opacity: 0.45;
   }
 }
 
-.button--inverse {
-  background: transparent;
-  color: $color_2;
+// --- Sizes ------------------------------------------------------------------
 
-  &:hover {
-    color: $color_1;
-    background: #001861;
+.button--small {
+  padding: 0.35rem 0.75rem;
+  font-size: 0.8125rem;
+}
+
+.button--medium {
+  padding: 0.6rem 1.15rem;
+  font-size: 0.9375rem;
+}
+
+.button--large {
+  padding: 0.8rem 1.6rem;
+  font-size: 1rem;
+}
+
+.button--full {
+  width: 100%;
+}
+
+// --- Variants ---------------------------------------------------------------
+
+.button--primary {
+  background: var(--accent);
+  color: var(--accent-contrast);
+
+  &:hover:not(:disabled) {
+    background: var(--accent-hover);
   }
+}
 
-  &:active {
-    color: $color_1;
-    background: #001861;
+.button--secondary {
+  background: var(--surface-hover);
+  border-color: var(--border-strong);
+  color: var(--text);
+
+  &:hover:not(:disabled) {
+    border-color: var(--accent-border);
+    color: var(--accent);
+  }
+}
+
+.button--ghost {
+  background: transparent;
+  border-color: var(--border-strong);
+  color: var(--text-muted);
+
+  &:hover:not(:disabled) {
+    background: var(--surface-hover);
+    color: var(--text);
+  }
+}
+
+.button--quiet {
+  background: transparent;
+  color: var(--text-muted);
+  padding-inline: 0.5rem;
+
+  &:hover:not(:disabled) {
+    color: var(--accent);
   }
 }
 
 .button--danger {
-  background: #830000;
-  border-color: $border-color_2;
+  background: var(--danger-soft);
+  border-color: rgba(239, 68, 68, 0.4);
+  color: var(--danger-hover);
 
-  &:hover {
-    background: #f34343;
-    border-color: $border-color_3;
+  &:hover:not(:disabled) {
+    background: var(--danger);
+    color: #fff;
+    border-color: var(--danger);
   }
-
-  &:active {
-    background: #f34343;
-    border-color: $border-color_3;
-  }
-}
-
-.button--small {
-  font-size: 0.8rem;
-}
-
-.button--big {
-  font-size: 1.5rem;
 }

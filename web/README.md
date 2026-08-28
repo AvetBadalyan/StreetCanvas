@@ -1,77 +1,114 @@
-# MERN project practice
+# StreetCanvas — Web
 
-This repository contains the Frontend application for Avet's MERN project practice, which is a web application that allows users to sign up, add places with description and address, to upload images - the main purpose of this app is to practice MERN - MongoDB, Express JS, React JS and Node JS as a Junior Fullstack Developer.
+Frontend for **StreetCanvas**, a crowd-mapped atlas of street art. Browse murals,
+stencils and paste-ups on a shared map, filter by tag or art form, and pin the
+ones you discover.
 
-[Link to App Backend Repo](https://github.com/AvetBadalyan/MERN-practice-backend.git)
-[Link to Deployed App Page](https://mern-project-front.web.app/)
+- **API repo:** https://github.com/AvetBadalyan/MERN-practice-backend
+- **Stack:** React 18 · React Router 6 · Sass · Leaflet
+- **[Design notes](NOTES.md)** — why the non-obvious parts are the way they are
 
-# Getting Started with Create React App
+---
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+## Features
 
-## Available Scripts
+- **Explore feed** — searchable, tag- and form-filterable grid with pagination.
+  All filter state lives in the URL, so any view can be linked or bookmarked and
+  the back button behaves.
+- **Map view** — every result plotted on a dark Leaflet basemap, auto-fitted to
+  the visible set.
+- **Contribute** — upload a photo (drag-and-drop, validated client-side), give an
+  address, and the API geocodes it onto the map.
+- **Tag editor** — chip-style input with popular-tag suggestions, normalised to
+  match the server's own rules so what you type is what gets stored.
+- **Demo account** — one click into a populated account; no sign-up needed to
+  look around.
+- **Cold-start handling** — see below.
 
-In the project directory, you can run:
+---
 
-### `npm start`
+## The cold-start problem
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+The API is hosted on a free tier that suspends after inactivity. The first
+request in a while can take up to a minute.
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+Previously every page fired its request immediately, the request failed, and the
+user got a modal saying **"An Error Occurred! / Failed to fetch"** — which reads
+as a broken site rather than a sleeping one.
 
-### `npm test`
+Now [`use-server-status.js`](src/shared/hooks/use-server-status.js) probes
+`/api/health` on load and retries with a delay while the server boots. The app
+holds back a wake-up screen with a progress indicator and an explanation, and
+only renders once the API answers. If it never does, the user gets a real
+explanation and a retry button instead of a stack-trace message.
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+The HTTP layer also distinguishes a *network* failure from an *API* error, so
+"we couldn't reach the server" and "that title is too short" are no longer the
+same message.
 
-### `npm run build`
+---
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+## Architecture notes
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+- **`src/shared/api/`** — all endpoint knowledge in one place. Components call
+  `fetchArtworks(...)`, not `fetch(process.env.REACT_APP_BACKEND_URL + "/places")`.
+  The API also normalises its own responses (every artwork arrives with its
+  `creator` populated), so no component has to handle a field that is sometimes
+  an object and sometimes an id.
+- **Limits are mirrored, deliberately** — `src/shared/util/tags.js` and
+  `src/artworks/util/constraints.js` restate the server's rules so a field is
+  rejected as you type rather than after a round trip. The server re-validates
+  everything regardless; these files name it as the source of truth.
+- **`src/styles/_tokens.scss`** — every colour, radius and shadow is a CSS custom
+  property. Components reference tokens, never raw hex.
+- **`useHttpClient`** — wraps a request with loading/error state and aborts
+  anything in flight on unmount.
+- **One form, two modes** — `ArtworkForm` serves both create and edit rather than
+  duplicating a near-identical page component for each.
+- **Skeletons over spinners** — the grid renders placeholder cards at the right
+  size, so results don't cause a layout jump.
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+```
+src/
+  artworks/      explore, create, edit, contributor pages + components
+  user/          auth and contributor pages
+  shared/
+    api/         endpoint wrappers + URL/asset resolution
+    components/  form elements, UI elements, navigation
+    hooks/       http, auth, debounce, server-status
+    context/     auth context
+  styles/        design tokens + mixins
+```
 
-### `npm run eject`
+---
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+## Local setup
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+```bash
+npm install
+npm start
+```
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
+Runs at `http://localhost:3000` and expects the API at `http://localhost:5000`.
 
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
+### Environment
 
-## Learn More
+```
+REACT_APP_API_URL=http://localhost:5000/api
+REACT_APP_ASSET_URL=http://localhost:5000
+```
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+`.env` is used for development, `.env.production` for builds. Both are committed
+because `REACT_APP_*` values are **baked into the JavaScript bundle and publicly
+readable** — never put a secret in one.
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+### Build & deploy
 
-### Code Splitting
+```bash
+npm run build
+firebase deploy      # or any static host
+```
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
-
-### Analyzing the Bundle Size
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
-
-### Making a Progressive Web App
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
-
-### Advanced Configuration
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+Set `REACT_APP_API_URL` in `.env.production` to your deployed API before
+building. Any static host works; the app is a SPA, so configure a catch-all
+rewrite to `/index.html` (already set in [`firebase.json`](firebase.json)).

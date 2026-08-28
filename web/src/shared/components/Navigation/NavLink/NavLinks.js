@@ -1,34 +1,50 @@
-import React, { useContext } from "react";
+import React from "react";
 import { NavLink } from "react-router-dom";
 
-import { AuthContext } from "../../../context/auth-context";
+import { useAuthContext } from "../../../context/auth-context";
+import Avatar from "../../UIElements/Avatar/Avatar";
 import "./NavLinks.scss";
 
-const NavLinks = (props) => {
-  const auth = useContext(AuthContext);
+const NavLinks = () => {
+  const auth = useAuthContext();
 
   return (
     <ul className="nav-links">
       <li>
-        <NavLink to="/">ALL USERS</NavLink>
+        <NavLink to="/" end>
+          Explore
+        </NavLink>
       </li>
-      {auth.isLoggedIn && (
+      <li>
+        <NavLink to="/contributors">Contributors</NavLink>
+      </li>
+
+      {auth.isLoggedIn ? (
         <>
           <li>
-            <NavLink to={`/${auth.userId}/places`}>MY PLACES</NavLink>
+            <NavLink to={`/contributors/${auth.userId}`}>My finds</NavLink>
           </li>
           <li>
-            <NavLink to="/places/new">ADD PLACE</NavLink>
+            <NavLink to="/artworks/new" className="nav-links__cta">
+              Add a find
+            </NavLink>
           </li>
-
-          <li>
-            <button onClick={auth.logout}>LOGOUT</button>
+          <li className="nav-links__account">
+            <Avatar
+              image={auth.user?.image}
+              alt={auth.user?.name || "You"}
+              className="nav-links__avatar"
+            />
+            <button type="button" onClick={auth.logout}>
+              Sign out
+            </button>
           </li>
         </>
-      )}
-      {!auth.isLoggedIn && (
+      ) : (
         <li>
-          <NavLink to="/auth">AUTHENTICATE</NavLink>
+          <NavLink to="/auth" className="nav-links__cta">
+            Sign in
+          </NavLink>
         </li>
       )}
     </ul>

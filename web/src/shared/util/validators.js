@@ -1,46 +1,35 @@
-const VALIDATOR_TYPE_REQUIRE = "REQUIRE";
-const VALIDATOR_TYPE_MINLENGTH = "MINLENGTH";
-const VALIDATOR_TYPE_MAXLENGTH = "MAXLENGTH";
-const VALIDATOR_TYPE_MIN = "MIN";
-const VALIDATOR_TYPE_MAX = "MAX";
-const VALIDATOR_TYPE_EMAIL = "EMAIL";
-const VALIDATOR_TYPE_FILE = "FILE";
+/**
+ * A tiny validation vocabulary: a field declares the rules it cares about, and
+ * `validate` applies them.
+ *
+ * Only the rules this app actually uses are defined - the original version
+ * carried MIN/MAX/FILE variants, two of which `validate` never even handled.
+ */
 
-export const VALIDATOR_REQUIRE = () => ({ type: VALIDATOR_TYPE_REQUIRE });
-export const VALIDATOR_FILE = () => ({ type: VALIDATOR_TYPE_FILE });
-export const VALIDATOR_MINLENGTH = (val) => ({
-  type: VALIDATOR_TYPE_MINLENGTH,
-  val: val,
-});
-export const VALIDATOR_MAXLENGTH = (val) => ({
-  type: VALIDATOR_TYPE_MAXLENGTH,
-  val: val,
-});
-export const VALIDATOR_MIN = (val) => ({ type: VALIDATOR_TYPE_MIN, val: val });
-export const VALIDATOR_MAX = (val) => ({ type: VALIDATOR_TYPE_MAX, val: val });
-export const VALIDATOR_EMAIL = () => ({ type: VALIDATOR_TYPE_EMAIL });
+const REQUIRE = "REQUIRE";
+const MINLENGTH = "MINLENGTH";
+const MAXLENGTH = "MAXLENGTH";
+const EMAIL = "EMAIL";
 
-export const validate = (value, validators) => {
-  let isValid = true;
-  for (const validator of validators) {
-    if (validator.type === VALIDATOR_TYPE_REQUIRE) {
-      isValid = isValid && value.trim().length > 0;
+export const VALIDATOR_REQUIRE = () => ({ type: REQUIRE });
+export const VALIDATOR_MINLENGTH = (val) => ({ type: MINLENGTH, val });
+export const VALIDATOR_MAXLENGTH = (val) => ({ type: MAXLENGTH, val });
+export const VALIDATOR_EMAIL = () => ({ type: EMAIL });
+
+export const validate = (value, validators) =>
+  validators.every((validator) => {
+    const trimmed = String(value ?? "").trim();
+
+    switch (validator.type) {
+      case REQUIRE:
+        return trimmed.length > 0;
+      case MINLENGTH:
+        return trimmed.length >= validator.val;
+      case MAXLENGTH:
+        return trimmed.length <= validator.val;
+      case EMAIL:
+        return /^\S+@\S+\.\S+$/.test(trimmed);
+      default:
+        return true;
     }
-    if (validator.type === VALIDATOR_TYPE_MINLENGTH) {
-      isValid = isValid && value.trim().length >= validator.val;
-    }
-    if (validator.type === VALIDATOR_TYPE_MAXLENGTH) {
-      isValid = isValid && value.trim().length <= validator.val;
-    }
-    if (validator.type === VALIDATOR_TYPE_MIN) {
-      isValid = isValid && +value >= validator.val;
-    }
-    if (validator.type === VALIDATOR_TYPE_MAX) {
-      isValid = isValid && +value <= validator.val;
-    }
-    if (validator.type === VALIDATOR_TYPE_EMAIL) {
-      isValid = isValid && /^\S+@\S+\.\S+$/.test(value);
-    }
-  }
-  return isValid;
-};
+  });

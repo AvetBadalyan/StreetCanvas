@@ -1,4 +1,5 @@
-import React, { useState, useContext } from "react";
+import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 import {
   VALIDATOR_EMAIL,
@@ -7,153 +8,204 @@ import {
 } from "../../../shared/util/validators";
 import { useForm } from "../../../shared/hooks/form-hook";
 import { useHttpClient } from "../../../shared/hooks/http-hook";
-import { AuthContext } from "../../../shared/context/auth-context";
-import "./Auth.scss";
-import ErrorModal from "../../../shared/components/UIElements/ErrorModal";
-import Card from "../../../shared/components/UIElements/Card/Card";
-import LoadingSpinner from "../../../shared/components/UIElements/LoadingSpinner/LoadingSpinner";
+import { useAuthContext } from "../../../shared/context/auth-context";
+import { login as loginRequest, signup } from "../../../shared/api/users";
 import Input from "../../../shared/components/FormElements/Input/Input";
 import ImageUpload from "../../../shared/components/FormElements/ImageUpload/ImageUpload";
 import Button from "../../../shared/components/FormElements/Button/Button";
+import ErrorModal from "../../../shared/components/UIElements/ErrorModal";
+import LoadingSpinner from "../../../shared/components/UIElements/LoadingSpinner/LoadingSpinner";
+import "./Auth.scss";
+
+// A read-only-ish account seeded by `npm run seed`, so anyone reviewing this
+// project can get inside without inventing credentials first.
+const DEMO_CREDENTIALS = {
+  email: "maya@streetcanvas.demo",
+  password: "demo1234",
+};
 
 const Auth = () => {
-  const auth = useContext(AuthContext);
+  const auth = useAuthContext();
+  const navigate = useNavigate();
+  const { isLoading, error, run, clearError } = useHttpClient();
   const [isLoginMode, setIsLoginMode] = useState(true);
-  const { isLoading, error, sendRequest, clearError } = useHttpClient();
 
   const [formState, inputHandler, setFormData] = useForm(
     {
-      email: {
-        value: "",
-        isValid: false,
-      },
-      password: {
-        value: "",
-        isValid: false,
-      },
+      email: { value: "", isValid: false },
+      password: { value: "", isValid: false },
     },
     false
   );
 
   const switchModeHandler = () => {
-    if (!isLoginMode) {
+    if (isLoginMode) {
       setFormData(
         {
           ...formState.inputs,
-          name: undefined,
-          image: undefined,
-        },
-        formState.inputs.email.isValid && formState.inputs.password.isValid
-      );
-    } else {
-      setFormData(
-        {
-          ...formState.inputs,
-          name: {
-            value: "",
-            isValid: false,
-          },
-          image: {
-            value: null,
-            isValid: false,
-          },
+          name: { value: "", isValid: false },
+          image: { value: null, isValid: false },
         },
         false
       );
+    } else {
+      setFormData(
+        { ...formState.inputs, name: undefined, image: undefined },
+        formState.inputs.email.isValid && formState.inputs.password.isValid
+      );
     }
-    setIsLoginMode((prevMode) => !prevMode);
+    setIsLoginMode((mode) => !mode);
   };
 
-  const authSubmitHandler = async (event) => {
+  const finish = (data) => {
+    auth.login(
+      {
+        userId: data.userId,
+        name: data.name,
+        email: data.email,
+        image: data.image,
+      },
+      data.token
+    );
+    navigate("/");
+  };
+
+  const submitHandler = async (event) => {
     event.preventDefault();
 
-    if (isLoginMode) {
-      try {
-        const responseData = await sendRequest(
-          process.env.REACT_APP_BACKEND_URL + "/users/login",
-          "POST",
-          JSON.stringify({
-            email: formState.inputs.email.value,
-            password: formState.inputs.password.value,
-          }),
-          {
-            "Content-Type": "application/json",
-          }
+    try {
+      if (isLoginMode) {
+        const data = await run((options) =>
+          loginRequest(
+            {
+              email: formState.inputs.email.value,
+              password: formState.inputs.password.value,
+            },
+            options
+          )
         );
-        auth.login(responseData.userId, responseData.token);
-      } catch (err) {}
-    } else {
-      try {
+        finish(data);
+      } else {
         const formData = new FormData();
-        formData.append("email", formState.inputs.email.value);
         formData.append("name", formState.inputs.name.value);
+        formData.append("email", formState.inputs.email.value);
         formData.append("password", formState.inputs.password.value);
         formData.append("image", formState.inputs.image.value);
-        const responseData = await sendRequest(
-          process.env.REACT_APP_BACKEND_URL + "/users/signup",
-          "POST",
-          formData
-        );
 
-        auth.login(responseData.userId, responseData.token);
-      } catch (err) {}
+        const data = await run((options) => signup(formData, options));
+        finish(data);
+      }
+    } catch {
+      // Surfaced by the error modal.
+    }
+  };
+
+  const demoLoginHandler = async () => {
+    try {
+      const data = await run((options) =>
+        loginRequest(DEMO_CREDENTIALS, options)
+      );
+      finish(data);
+    } catch {
+      // Surfaced by the error modal.
     }
   };
 
   return (
-    <>
+    <div className="auth-page">
       <ErrorModal error={error} onClear={clearError} />
-      <Card className="authentication">
+
+      <div className="auth-card">
         {isLoading && <LoadingSpinner asOverlay />}
-        <h2>Login Required</h2>
-        <hr />
-        <form onSubmit={authSubmitHandler}>
+
+        <h1>{isLoginMode ? "Welcome back" : "Join StreetCanvas"}</h1>
+        <p className="auth-card__subtitle">
+          {isLoginMode
+            ? "Sign in to add finds and manage the ones you've pinned."
+            : "Create an account to start pinning street art to the map."}
+        </p>
+
+        <form onSubmit={submitHandler}>
           {!isLoginMode && (
             <Input
-              element="input"
               id="name"
-              type="text"
-              label="Your Name"
+              element="input"
+              label="Display name"
+              placeholder="Maya Ortega"
               validators={[VALIDATOR_REQUIRE()]}
               errorText="Please enter a name."
               onInput={inputHandler}
             />
           )}
-          {!isLoginMode && (
-            <ImageUpload
-              center
-              id="image"
-              onInput={inputHandler}
-              errorText="Please provide an image."
-            />
-          )}
+
           <Input
-            element="input"
             id="email"
+            element="input"
             type="email"
-            label="E-Mail"
+            label="Email"
+            placeholder="you@example.com"
             validators={[VALIDATOR_EMAIL()]}
             errorText="Please enter a valid email address."
             onInput={inputHandler}
           />
+
           <Input
-            element="input"
             id="password"
+            element="input"
             type="password"
             label="Password"
+            placeholder="At least 6 characters"
             validators={[VALIDATOR_MINLENGTH(6)]}
-            errorText="Please enter a valid password, at least 6 characters."
+            errorText="Passwords need at least 6 characters."
             onInput={inputHandler}
           />
-          <Button type="submit" disabled={!formState.isValid}>
-            {isLoginMode ? "LOGIN" : "SIGNUP"}
+
+          {!isLoginMode && (
+            <ImageUpload
+              id="image"
+              label="Profile photo"
+              hint="Shown next to the finds you add."
+              onInput={inputHandler}
+            />
+          )}
+
+          <Button
+            type="submit"
+            size="large"
+            fullWidth
+            disabled={!formState.isValid || isLoading}
+          >
+            {isLoginMode ? "Sign in" : "Create account"}
           </Button>
         </form>
-        <Button inverse onClick={switchModeHandler}>
-          SWITCH TO {isLoginMode ? "SIGNUP" : "LOGIN"}
+
+        <div className="auth-card__divider">
+          <span>or</span>
+        </div>
+
+        <Button
+          variant="secondary"
+          fullWidth
+          onClick={demoLoginHandler}
+          disabled={isLoading}
+        >
+          Explore with the demo account
         </Button>
-      </Card>
-    </>
+        <p className="auth-card__demo-note">
+          No sign-up needed - browse and add finds as a sample contributor.
+        </p>
+
+        <button
+          type="button"
+          className="auth-card__switch"
+          onClick={switchModeHandler}
+        >
+          {isLoginMode
+            ? "Need an account? Sign up"
+            : "Already registered? Sign in"}
+        </button>
+      </div>
+    </div>
   );
 };
 
