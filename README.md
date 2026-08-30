@@ -10,7 +10,7 @@ Wikimedia Commons contributors.
 
 **Live demo:** https://streetcanvas.vercel.app · **Demo login:** `demo@streetcanvas.demo` / `demo1234`
 
-<!-- Add a screenshot here once deployed - it is the first thing anyone looks at. -->
+![StreetCanvas explore page](docs/screenshot-explore.png)
 
 ---
 

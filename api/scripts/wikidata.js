@@ -99,8 +99,12 @@ const toArtwork = (row, form) => {
 
   // Wikidata descriptions are terse ("statue in Paris"), so compose a sentence
   // from the structured fields and append the description if it adds anything.
+  // "a installation" reads badly; the only vowel-initial form is `installation`,
+  // but deriving it keeps this correct if the vocabulary grows.
+  const article = /^[aeiou]/.test(form) ? "an" : "a";
+
   const sentences = [
-    `${title} is a ${form}${artist !== "Unknown" ? ` by ${artist}` : ""}${
+    `${title} is ${article} ${form}${artist !== "Unknown" ? ` by ${artist}` : ""}${
       year ? `, dating from ${year}` : ""
     }.`,
   ];
