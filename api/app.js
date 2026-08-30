@@ -53,9 +53,14 @@ app.use(
       // Allow non-browser clients (curl, uptime checks) which send no Origin,
       // and fall back to permissive mode when no allowlist is configured.
       if (!origin || allowedOrigins.length === 0) return callback(null, true);
+      // An HttpError, not a plain Error: a blocked origin is the caller's
+      // problem, and a plain Error would fall through to the handler's default
+      // and be reported as a 500.
       return allowedOrigins.includes(origin)
         ? callback(null, true)
-        : callback(new Error(`Origin ${origin} is not allowed by CORS.`));
+        : callback(
+            new HttpError(`Origin ${origin} is not allowed by CORS.`, 403)
+          );
     },
   })
 );
