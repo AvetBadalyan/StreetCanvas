@@ -24,7 +24,7 @@ const start = async () => {
   process.env.JWT_KEY =
     process.env.JWT_KEY || "local_dev_only_key_not_a_real_secret";
   // Left unset on purpose: with no allowlist the API accepts any origin, so the
-  // dev server works whatever port Create React App ends up on.
+  // dev server works whatever port Vite ends up on.
 
   const { connectToDatabase } = require("../util/db");
   const { seedDatabase } = require("./seed");

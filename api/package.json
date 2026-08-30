@@ -1,7 +1,7 @@
 {
   "name": "streetcanvas-api",
   "version": "2.0.0",
-  "description": "REST API for StreetCanvas - a crowd-mapped atlas of street art.",
+  "description": "REST API for StreetCanvas - an atlas of public art.",
   "main": "server.js",
   "engines": {
     "node": ">=18"

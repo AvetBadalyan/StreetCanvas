@@ -1,8 +1,8 @@
 # StreetCanvas — API
 
-REST API for **StreetCanvas**, a crowd-mapped atlas of street art. Contributors
-photograph a mural, stencil or paste-up, tag it, and pin it to a shared map by
-street address.
+REST API for **StreetCanvas**, an atlas of public art. Serves a catalogue
+imported from Wikidata, and lets contributors photograph and pin artworks of
+their own by street address.
 
 - **Part of the [StreetCanvas](../README.md) monorepo** — the React app lives in [`web/`](../web)
 - **Stack:** Node · Express · MongoDB (Mongoose) · JWT · Cloudinary · Nominatim
@@ -19,8 +19,8 @@ Beyond CRUD, a few decisions are worth pointing at:
 | **Write consistency** | Creating and deleting an artwork touches two documents (the artwork and its owner's reference list). Both run inside a **MongoDB transaction** with proper `abortTransaction` and `endSession` handling, so a mid-write failure can't leave a dangling reference. |
 | **Serverless-ready** | Deployed as a single Vercel function. The Mongoose connection is **cached on `global`** so warm invocations reuse it instead of opening a new Atlas connection per request. |
 | **Cold-start UX** | `/api/health` is declared *before* the database guard and the server binds its port *before* connecting to Mongo — so a liveness probe answers immediately and the frontend can distinguish "still booting" from "broken". |
-| **Image durability** | Uploads stream straight to Cloudinary through a **custom multer storage engine** (the published `multer-storage-cloudinary` is unmaintained and pins the v1 SDK). Falls back to local disk when no Cloudinary keys are set. |
-| **Failed-upload cleanup** | The error handler deletes the already-uploaded image on any failed request, so a rejected validation doesn't orphan a file. |
+| **Image durability** | Uploads are held in memory by multer and only sent to Cloudinary once the request has passed validation and geocoding, so a rejected request never leaves an orphaned file. Falls back to local disk when no Cloudinary keys are set. |
+| **Open data import** | The catalogue is imported from Wikidata's SPARQL endpoint, one art form per query with retry and backoff, and cached in the repo so seeding is deterministic and offline. |
 | **Search** | Regex search across title/artist/address/description/tags, with user input escaped so `a(` can't blow up as an invalid regex. Tag and art-form facets are computed with an aggregation pipeline to drive the filter chips. |
 
 ---
@@ -70,7 +70,7 @@ transaction.)
 
 ```bash
 cp .env.example .env      # then fill it in
-npm run seed              # optional: 3 demo contributors + 12 artworks
+npm run seed              # optional: load the bundled catalogue
 npm run dev
 ```
 
@@ -95,10 +95,10 @@ npm run seed              # add demo content, skip anything already present
 npm run seed -- --reset   # wipe users + artworks first
 ```
 
-Demo login: `maya@streetcanvas.demo` / `demo1234`.
+Demo login: `demo@streetcanvas.demo` / `demo1234`.
 
-The seed images are neutral placeholders — swap them for real street-art photos
-in `scripts/seed-data.js` before taking screenshots.
+The catalogue lives in `scripts/public-art.json`. Refresh it from Wikidata with
+`npm run fetch:art` — only needed when you want different content.
 
 ---
 
@@ -142,7 +142,8 @@ routes/             route definitions + express-validator rules
 models/             mongoose schemas
 middleware/         auth, uploads, rate limiting, request/id validation
 util/               db cache, geocoding, image store, async handler, helpers
-scripts/seed.js     demo data loader (also used by dev:demo)
+scripts/seed.js     catalogue loader (also used by dev:demo)
+scripts/wikidata.js SPARQL client + mapping onto the Artwork schema
 scripts/dev-server  zero-setup local demo on an in-memory database
 ```
 

@@ -1,11 +1,11 @@
 # StreetCanvas — Web
 
-Frontend for **StreetCanvas**, a crowd-mapped atlas of street art. Browse murals,
-stencils and paste-ups on a shared map, filter by tag or art form, and pin the
-ones you discover.
+Frontend for **StreetCanvas**, an atlas of public art. Browse sculptures, murals,
+monuments and fountains on a map, filter them by artist, city, material or form,
+and add the ones you find yourself.
 
 - **Part of the [StreetCanvas](../README.md) monorepo** — the Express API lives in [`api/`](../api)
-- **Stack:** React 18 · React Router 6 · Sass · Leaflet
+- **Stack:** React 18 · Vite · React Router 7 · Sass · Leaflet
 - **[Design notes](NOTES.md)** — why the non-obvious parts are the way they are
 
 ---
@@ -15,34 +15,33 @@ ones you discover.
 - **Explore feed** — searchable, tag- and form-filterable grid with pagination.
   All filter state lives in the URL, so any view can be linked or bookmarked and
   the back button behaves.
-- **Map view** — every result plotted on a dark Leaflet basemap, auto-fitted to
-  the visible set.
+- **Map view** — every result plotted on a Leaflet map, auto-fitted to the
+  visible set.
 - **Contribute** — upload a photo (drag-and-drop, validated client-side), give an
   address, and the API geocodes it onto the map.
 - **Tag editor** — chip-style input with popular-tag suggestions, normalised to
   match the server's own rules so what you type is what gets stored.
-- **Demo account** — one click into a populated account; no sign-up needed to
-  look around.
+- **Demo account** — one click into a populated account; no sign-up needed.
 - **Cold-start handling** — see below.
 
 ---
 
 ## The cold-start problem
 
-The API is hosted on a free tier that suspends after inactivity. The first
-request in a while can take up to a minute.
+The API runs on free hosting that doesn't keep it awake between visits, so the
+first request in a while pays a cold start.
 
-Previously every page fired its request immediately, the request failed, and the
-user got a modal saying **"An Error Occurred! / Failed to fetch"** — which reads
-as a broken site rather than a sleeping one.
+Originally every page fired its request immediately, the request failed, and the
+user got a modal reading **"An Error Occurred! / Failed to fetch"** — which looks
+like a broken site rather than a sleeping one.
 
 Now [`use-server-status.js`](src/shared/hooks/use-server-status.js) probes
-`/api/health` on load and retries with a delay while the server boots. The app
-holds back a wake-up screen with a progress indicator and an explanation, and
-only renders once the API answers. If it never does, the user gets a real
-explanation and a retry button instead of a stack-trace message.
+`/api/health` on load and retries while the server boots. The page itself renders
+straight away; pages hold only their *first data request* until the probe
+answers, and a banner explains the wait. A warm server therefore costs nothing
+visible, and a cold one costs a skeleton plus one honest sentence.
 
-The HTTP layer also distinguishes a *network* failure from an *API* error, so
+The HTTP layer also separates a *network* failure from an *API* error, so
 "we couldn't reach the server" and "that title is too short" are no longer the
 same message.
 
@@ -51,10 +50,9 @@ same message.
 ## Architecture notes
 
 - **`src/shared/api/`** — all endpoint knowledge in one place. Components call
-  `fetchArtworks(...)`, not `fetch(process.env.REACT_APP_BACKEND_URL + "/places")`.
-  The API also normalises its own responses (every artwork arrives with its
-  `creator` populated), so no component has to handle a field that is sometimes
-  an object and sometimes an id.
+  `fetchArtworks(...)`, never a hand-built URL. The API also normalises its own
+  responses (every artwork arrives with its `creator` populated), so no component
+  has to handle a field that is sometimes an object and sometimes an id.
 - **Limits are mirrored, deliberately** — `src/shared/util/tags.js` and
   `src/artworks/util/constraints.js` restate the server's rules so a field is
   rejected as you type rather than after a round trip. The server re-validates
@@ -69,6 +67,7 @@ same message.
   size, so results don't cause a layout jump.
 
 ```
+index.html       Vite entry point (lives at the project root, not in public/)
 src/
   artworks/      explore, create, edit, contributor pages + components
   user/          auth and contributor pages
@@ -76,9 +75,12 @@ src/
     api/         endpoint wrappers + URL/asset resolution
     components/  form elements, UI elements, navigation
     hooks/       http, auth, debounce, server-status
-    context/     auth context
+    context/     auth and server-status context
   styles/        design tokens + mixins
 ```
+
+Files containing JSX use the `.jsx` extension; plain modules (hooks, utilities,
+API wrappers) stay `.js`.
 
 ---
 
@@ -94,7 +96,7 @@ To run just this app (it expects the API already on `http://localhost:5000`):
 
 ```bash
 npm install
-npm start
+npm run dev
 ```
 
 Runs at `http://localhost:3000`.
@@ -102,21 +104,24 @@ Runs at `http://localhost:3000`.
 ### Environment
 
 ```
-REACT_APP_API_URL=http://localhost:5000/api
-REACT_APP_ASSET_URL=http://localhost:5000
+VITE_API_URL=http://localhost:5000/api
+VITE_ASSET_URL=http://localhost:5000
 ```
 
-`.env` is used for development, `.env.production` for builds. Both are committed
-because `REACT_APP_*` values are **baked into the JavaScript bundle and publicly
-readable** — never put a secret in one.
+Vite only exposes variables prefixed `VITE_`, and they are **compiled into the
+bundle and publicly readable** — never put a secret in one. That is also why both
+`.env` and `.env.production` are committed: they contain nothing but public URLs.
 
 ### Build & deploy
 
 ```bash
-npm run build        # or `npm run build` from the repo root
-firebase deploy      # or any static host
+npm run build        # or from the repo root
+npm run preview      # serve the production build locally
 ```
 
-Set `REACT_APP_API_URL` in `.env.production` to your deployed API before
-building. Any static host works; the app is a SPA, so configure a catch-all
-rewrite to `/index.html` (already set in [`firebase.json`](firebase.json)).
+Output goes to `build/` rather than Vite's default `dist/`, so the existing
+Vercel and Firebase configuration keeps working unchanged.
+
+The app is a SPA, so any host needs a catch-all rewrite to `/index.html` —
+already configured in [`vercel.json`](vercel.json) and
+[`firebase.json`](firebase.json).

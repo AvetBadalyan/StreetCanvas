@@ -25,8 +25,8 @@ npm run dev:demo  # starts both, with a throwaway in-memory database
 
 Then open <http://localhost:3000>. The API runs on port 5000.
 
-`dev:demo` boots an in-memory MongoDB replica set, seeds it with 12 artworks
-across 3 contributors, and throws it all away on exit — so anyone can clone this
+`dev:demo` boots an in-memory MongoDB replica set, seeds it with the bundled
+catalogue of ~90 artworks, and throws it all away on exit — so anyone can clone this
 repo and see the working app in one command.
 
 To run against a real database instead, copy `api/.env.example` to `api/.env`,
@@ -68,7 +68,7 @@ npm run dev
 ## Stack
 
 **API** — Node · Express · MongoDB (Mongoose) · JWT · Cloudinary · Nominatim
-**Web** — React 18 · React Router 6 · Sass · Leaflet
+**Web** — React 18 · Vite · React Router 7 · Sass · Leaflet
 
 ## Layout
 
@@ -102,7 +102,7 @@ The two halves deploy separately from this one repo:
 - **API → Vercel.** Set the project's *Root Directory* to `api`. It runs as a
   single serverless function (`api/api/index.js`) with a cached Mongoose
   connection. Environment variables are listed in `api/.env.example`.
-- **Web → Firebase Hosting** (or any static host). Set `REACT_APP_API_URL` in
+- **Web → Firebase Hosting** (or any static host). Set `VITE_API_URL` in
   `web/.env.production` to the deployed API, then `npm run build` and deploy
   `web/build`.
 
@@ -110,5 +110,5 @@ The two halves deploy separately from this one repo:
 
 This started as a two-repo practice project following a course, and was rebuilt
 into StreetCanvas. Both original repositories' commit histories are preserved
-here — `git log --follow api/app.js` and `git log web/src/index.js` both reach
+here — `git log --follow api/app.js` and `git log web/src/index.jsx` both reach
 back to January 2024.

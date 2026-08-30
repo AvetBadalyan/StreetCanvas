@@ -1,10 +1,12 @@
 // Single place that knows where the API lives and what a failure looks like.
-// Previously every page interpolated `process.env.REACT_APP_BACKEND_URL` inline,
+// Previously every page interpolated a backend URL from env inline,
 // so a change to the URL shape meant editing a dozen components.
 
-const API_URL = process.env.REACT_APP_API_URL || "http://localhost:5000/api";
+// Vite exposes env vars prefixed with VITE_ on `import.meta.env`. Anything here
+// is compiled into the bundle and publicly readable - never a secret.
+const API_URL = import.meta.env.VITE_API_URL || "http://localhost:5000/api";
 
-const ASSET_URL = process.env.REACT_APP_ASSET_URL || "http://localhost:5000";
+const ASSET_URL = import.meta.env.VITE_ASSET_URL || "http://localhost:5000";
 
 /** Thrown for any non-2xx response, carrying the server's status. */
 export class ApiError extends Error {
