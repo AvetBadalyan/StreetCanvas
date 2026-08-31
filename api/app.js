@@ -9,8 +9,9 @@ const cors = require("cors");
 const morgan = require("morgan");
 const multer = require("multer");
 
-const artworksRoutes = require("./routes/artworks-routes");
+const placesRoutes = require("./routes/places-routes");
 const usersRoutes = require("./routes/users-routes");
+const listsRoutes = require("./routes/lists-routes");
 const HttpError = require("./models/http-error");
 const { apiLimiter } = require("./middleware/rate-limit");
 const { connectToDatabase } = require("./util/db");
@@ -76,21 +77,25 @@ app.use("/uploads/images", express.static(path.join(LOCAL_UPLOAD_DIR)));
 // with a short index rather than a bare 404.
 app.get("/", (req, res) => {
   res.json({
-    name: "StreetCanvas API",
-    description: "REST API for StreetCanvas, a crowd-mapped atlas of public art.",
-    source: "https://github.com/AvetBadalyan/StreetCanvas",
+    name: "Wander Armenia API",
+    description: "REST API for Wander Armenia - find and plan places worth visiting in Armenia.",
+    source: "https://github.com/AvetBadalyan/wander-armenia",
     health: "/api/health",
     endpoints: {
-      "GET /api/artworks": "Explore feed. Query: q, tag, form, sort, page, limit",
-      "GET /api/artworks/facets": "Tag and art-form counts for the filter chips",
-      "GET /api/artworks/:id": "A single artwork",
-      "GET /api/artworks/user/:id": "One contributor's artworks",
+      "GET /api/places": "Catalogue. Query: q, tag, category, sort, page, limit",
+      "GET /api/places?near=lat,lng&radius=km": "Nearest first, with distance",
+      "GET /api/places/facets": "Tag, category and region counts for the filters",
+      "GET /api/places/:id": "A single place",
+      "GET /api/places/user/:id": "One contributor's places",
       "GET /api/users": "All contributors",
       "POST /api/users/signup": "multipart: name, email, password, image",
       "POST /api/users/login": "json: email, password",
-      "POST /api/artworks": "Authenticated. multipart, see the README",
-      "PATCH /api/artworks/:id": "Authenticated, owner only",
-      "DELETE /api/artworks/:id": "Authenticated, owner only",
+      "POST /api/places": "Authenticated. multipart, see the README",
+      "PATCH /api/places/:id": "Authenticated, owner only",
+      "DELETE /api/places/:id": "Authenticated, owner only",
+      "GET /api/me/lists": "Authenticated. Your visited and wishlist places",
+      "PUT /api/me/lists/:list/:id": "Authenticated. Save to visited|wishlist",
+      "DELETE /api/me/lists/:list/:id": "Authenticated. Remove from a list",
     },
   });
 });
@@ -129,8 +134,9 @@ app.use("/api", async (req, res, next) => {
   }
 });
 
-app.use("/api/artworks", artworksRoutes);
+app.use("/api/places", placesRoutes);
 app.use("/api/users", usersRoutes);
+app.use("/api/me", listsRoutes);
 
 app.use((req, res, next) => {
   next(new HttpError(`Could not find ${req.method} ${req.originalUrl}.`, 404));

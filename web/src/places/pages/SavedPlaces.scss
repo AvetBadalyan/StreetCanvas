@@ -1,0 +1,43 @@
+@use "../../styles/mixins" as *;
+
+.saved-tabs {
+  display: flex;
+  gap: 0.35rem;
+  margin-bottom: 1.75rem;
+  padding: 3px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  width: fit-content;
+
+  button {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.45rem;
+    font: inherit;
+    font-size: 0.9375rem;
+    font-weight: 500;
+    color: var(--text-muted);
+    background: transparent;
+    border: none;
+    border-radius: calc(var(--radius) - 3px);
+    padding: 0.45rem 0.9rem;
+    cursor: pointer;
+    transition: background var(--transition), color var(--transition);
+
+    span {
+      font-size: 0.75rem;
+      font-variant-numeric: tabular-nums;
+      opacity: 0.75;
+    }
+
+    &:hover {
+      color: var(--text);
+    }
+
+    &.is-active {
+      background: var(--accent);
+      color: var(--accent-contrast);
+    }
+  }
+}

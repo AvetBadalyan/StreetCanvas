@@ -4,6 +4,7 @@ import { Link, useLocation } from "react-router-dom";
 import NavLinks from "../NavLink/NavLinks";
 import SideDrawer from "../SideDrawer/SideDrawer";
 import Backdrop from "../../UIElements/Backdrop/Backdrop";
+import ThemeToggle from "../../UIElements/ThemeToggle/ThemeToggle";
 import "./MainNavigation.scss";
 
 const MainNavigation = () => {
@@ -39,16 +40,18 @@ const MainNavigation = () => {
 
           <Link className="main-nav__brand" to="/">
             <span className="main-nav__mark" aria-hidden="true">
-              SC
+              WA
             </span>
             <span className="main-nav__wordmark">
-              Street<strong>Canvas</strong>
+              Wander<strong>Armenia</strong>
             </span>
           </Link>
 
           <nav className="main-nav__desktop">
             <NavLinks />
           </nav>
+
+          <ThemeToggle />
         </div>
       </header>
     </>

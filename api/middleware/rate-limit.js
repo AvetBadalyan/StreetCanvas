@@ -31,7 +31,7 @@ const uploadLimiter = rateLimit({
   limit: 30,
   standardHeaders: "draft-7",
   legacyHeaders: false,
-  handler: handler("You have added a lot of artworks in a short time. Please try again later."),
+  handler: handler("You have added a lot of places in a short time. Please try again later."),
 });
 
 module.exports = { apiLimiter, authLimiter, uploadLimiter };

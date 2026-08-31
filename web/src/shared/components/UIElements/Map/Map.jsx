@@ -37,7 +37,7 @@ const escapeHtml = (value = "") =>
   );
 
 /**
- * Renders one or many artwork locations.
+ * Renders one or many place locations.
  *
  * With a single marker it centres on it; with several it fits the viewport to
  * cover them all, which is what the explore map view needs.

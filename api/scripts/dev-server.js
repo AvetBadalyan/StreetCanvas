@@ -6,7 +6,7 @@
  * can be cloned and run by anyone in one command.
  *
  * A replica set (rather than a plain in-memory server) is required because
- * creating and deleting an artwork run inside a transaction.
+ * creating and deleting a place run inside a transaction.
  *
  * Everything lives in memory and is discarded on exit.
  */
@@ -20,7 +20,7 @@ const start = async () => {
   const replSet = await MongoMemoryReplSet.create({ replSet: { count: 1 } });
 
   // Must be set before app.js is required - it reads config at load time.
-  process.env.MONGO_URI = replSet.getUri("streetcanvas");
+  process.env.MONGO_URI = replSet.getUri("wanderarmenia");
   process.env.JWT_KEY =
     process.env.JWT_KEY || "local_dev_only_key_not_a_real_secret";
   // Left unset on purpose: with no allowlist the API accepts any origin, so the
@@ -33,13 +33,13 @@ const start = async () => {
   await connectToDatabase();
 
   const result = await seedDatabase({ log: () => {} });
-  console.log(`Seeded ${result.created} artworks across 3 contributors.`);
+  console.log(`Seeded ${result.created} places.`);
 
   const server = app.listen(PORT, () => {
     console.log(
       [
         "",
-        "  StreetCanvas API (demo mode)",
+        "  Wander Armenia API (demo mode)",
         `  http://localhost:${PORT}/api/health`,
         "",
         `  Demo login:  ${result.demoEmail}  /  ${result.demoPassword}`,

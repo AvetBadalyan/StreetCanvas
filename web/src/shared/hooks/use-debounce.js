@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 
 /**
  * Delays a rapidly changing value. Used by the explore search box so typing
- * "mural" fires one request instead of five.
+ * "monastery" fires one request instead of nine.
  */
 export const useDebounce = (value, delay = 350) => {
   const [debounced, setDebounced] = useState(value);

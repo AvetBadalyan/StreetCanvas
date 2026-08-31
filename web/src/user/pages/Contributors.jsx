@@ -35,7 +35,7 @@ const Contributors = () => {
 
       <header className="page__header">
         <h1>Contributors</h1>
-        <p>The people putting street art on the map.</p>
+        <p>The people adding places to the map.</p>
       </header>
 
       {(isLoading || !isReady) && (

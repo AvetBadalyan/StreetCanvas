@@ -1,0 +1,23 @@
+.theme-toggle {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.25rem;
+  height: 2.25rem;
+  padding: 0;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--surface);
+  // Full-strength text, not --text-muted: at 18px the icon is small enough that
+  // a muted colour drops below a comfortable contrast ratio.
+  color: var(--text);
+  cursor: pointer;
+  transition: background var(--transition), border-color var(--transition),
+    color var(--transition);
+
+  &:hover {
+    background: var(--surface-hover);
+    border-color: var(--accent-border);
+    color: var(--accent);
+  }
+}

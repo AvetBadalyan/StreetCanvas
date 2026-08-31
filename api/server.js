@@ -15,7 +15,7 @@ const PORT = process.env.PORT || 5000;
 // version only called listen() inside the connect callback, which meant a bad
 // connection string produced a server that never accepted a single request.
 const server = app.listen(PORT, () => {
-  console.log(`StreetCanvas API listening on http://localhost:${PORT}`);
+  console.log(`Wander Armenia API listening on http://localhost:${PORT}`);
 });
 
 connectToDatabase()

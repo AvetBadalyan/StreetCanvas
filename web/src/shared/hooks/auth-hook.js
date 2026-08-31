@@ -1,6 +1,6 @@
 import { useState, useCallback, useEffect, useRef } from "react";
 
-const STORAGE_KEY = "streetcanvas.auth";
+const STORAGE_KEY = "wanderarmenia.auth";
 // Must stay in step with the API's token TTL.
 const TOKEN_TTL_MS = 7 * 24 * 60 * 60 * 1000;
 

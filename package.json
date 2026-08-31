@@ -1,8 +1,8 @@
 {
-  "name": "streetcanvas",
+  "name": "wander-armenia",
   "version": "2.0.0",
   "private": true,
-  "description": "StreetCanvas - an atlas of public art. Monorepo: Express API + React web app.",
+  "description": "Wander Armenia - places worth visiting across Armenia. Monorepo: Express API + React web app.",
   "author": "Avet Badalyan",
   "license": "ISC",
   "scripts": {
@@ -12,7 +12,7 @@
     "build": "npm --prefix web run build",
     "seed": "npm --prefix api run seed --",
     "start:api": "npm --prefix api start",
-    "fetch:art": "npm --prefix api run fetch:art --"
+    "fetch:places": "npm --prefix api run fetch:places --"
   },
   "devDependencies": {
     "concurrently": "^9.1.0"

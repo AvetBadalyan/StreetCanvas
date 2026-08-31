@@ -16,17 +16,60 @@ The payoff is that a `try/catch` inside a controller now *means* something: it's
 there because I want to return a specific status — a 403, a 404, a 422 — not
 just to convert an error into a 500.
 
-### Why use a transaction to create an artwork?
+### Why store coordinates as GeoJSON rather than a `{ lat, lng }` pair?
 
-Creating one writes to two places: the `artworks` collection, and the `artworks`
+Because "what can I see from where I am standing" is the app's central question,
+and a `2dsphere` index answers it in the database. Two plain numbers would mean
+loading every document and measuring distance in JavaScript, which stops being
+acceptable the moment the catalogue grows.
+
+The cost is that GeoJSON stores `[longitude, latitude]` — the reverse of how
+people write coordinates. That reversal is contained entirely in
+`models/place.js`: a `toObject` transform hands every caller a plain
+`{ lat, lng }`, and `Place.toGeoPoint({ lat, lng })` converts back. Nothing
+outside that file has to remember the order.
+
+### Why does the nearby query use an aggregation instead of `find()`?
+
+`$geoNear` both sorts by distance *and* reports it, which a `find()` cannot do —
+and the distance is worth showing, since "3 km away" is the whole point of the
+feature. It has to be the first stage of the pipeline, so pagination, the
+creator lookup and the total count all happen after it inside a `$facet`.
+
+The tradeoff is that aggregation output bypasses the schema's `toObject`
+transform, so `shapeAggregated` in the controller redoes that reshaping by hand.
+Worth it for one endpoint; it would be worth extracting if there were three.
+
+A malformed `?near=` returns `null` from `parseNearby` rather than a 422 — a
+flaky geolocation API should degrade to the normal listing, not break the page.
+
+### Why use a transaction to create a place?
+
+Creating one writes to two places: the `places` collection, and the `places`
 array on the user document. If the process died between those two writes, I'd
-have an artwork nobody owns, or a user pointing at an artwork that doesn't
-exist. A transaction makes both land or neither.
+have a place nobody owns, or a user pointing at a place that doesn't exist. A
+transaction makes both land or neither.
+
+Deleting is the same argument with one more write: the place, the owner's
+reference, and a pull from the `visited` and `wishlist` arrays of everyone who
+saved it. A deleted place must not linger on anyone's list.
 
 **Follow-up you should expect:** *"Do transactions work on any MongoDB?"* No —
 they need a replica set. Atlas gives you one by default. That's also why the
 local demo (`npm run dev:demo`) starts an in-memory **replica set** rather than
 a plain in-memory server.
+
+### Why are the visited and wishlist lists arrays on the user, not a join collection?
+
+A person tracks tens of places, not thousands, so an array of ids is the simpler
+and faster shape: one document read, one `$addToSet` to write, no second
+collection to keep in step. A join collection would earn its keep if a list
+entry needed its own data — a date visited, a note, a rating — which is exactly
+the change that would make me rewrite this.
+
+Adding to one list pulls from the other in the same update, because somewhere
+you have been is no longer somewhere you want to go. `$addToSet` also makes the
+call idempotent, so a double tap or a retried request can't create duplicates.
 
 ### Why cache the database connection on `global`?
 
@@ -79,30 +122,45 @@ invalid regular expression and the endpoint 500s. Regex metacharacters from user
 input are also a denial-of-service risk (a catastrophically backtracking
 pattern), so neutralising them is the right default.
 
+### Why is `category` a fixed enum but `tags` free text?
+
+The filter chips are only useful if the vocabulary is small and stable. Ten
+categories — monastery, church, fortress, archaeological, museum, mountain,
+lake, waterfall, cave, other — give a reader a mental map of the catalogue;
+a hundred user-invented ones would not. Tags carry everything the enum can't
+("unesco", "13th-century", "tavush") and are normalised to lowercase slugs in
+`util/tags.js`, so filtering by them is still predictable.
+
 ### Where does the catalogue data come from?
 
 Wikidata, via its public SPARQL endpoint. `scripts/wikidata.js` asks for items
-that are a sculpture / statue / monument / memorial / mural / fountain /
-installation **and** have both coordinates and a photo on Wikimedia Commons,
-then maps each result onto the `Artwork` schema — composing a readable
+located in Armenia that are an instance of one of the mapped classes —
+monastery, church, fortress, archaeological site, museum, mountain, lake,
+waterfall, cave — **and** have both coordinates and a photo on Wikimedia
+Commons, then maps each result onto the `Place` schema, composing a readable
 description out of the structured fields.
 
-Two things I'd point at if asked:
+Three things I'd point at if asked:
 
-- **One query per art form, not one big query.** Asking for all seven types at
+- **One query per category, not one big query.** Asking for all nine types at
   once reliably times out on the shared endpoint, and querying separately also
-  produces a balanced spread across forms instead of whichever type sorts first.
-  Each type retries with backoff and is skipped if it keeps failing — a partial
-  catalogue beats none.
-- **The result is committed to the repo** as `scripts/public-art.json`, and
-  `npm run seed` reads that file rather than calling Wikidata. Seeding is
+  produces a balanced spread across categories instead of whichever type sorts
+  first. Each type retries with backoff and is skipped if it keeps failing — a
+  partial catalogue beats none.
+- **Rows are folded, not deduplicated.** A place comes back once per
+  (administrative area × heritage status) combination, so Geghard appears three
+  times. Each row can carry a different useful fact — one names the province,
+  another says it's a UNESCO site — so the rows are merged rather than having
+  the extras thrown away.
+- **The result is committed to the repo** as `scripts/places.json` (461 places),
+  and `npm run seed` reads that file rather than calling Wikidata. Seeding is
   therefore deterministic, offline-capable and fast, and the dataset is
-  reviewable in a diff. `npm run fetch:art` refreshes it when I actually want
+  reviewable in a diff. `npm run fetch:places` refreshes it when I actually want
   new content.
 
-Licensing: Wikidata is CC0, Commons images are freely licensed, and both are
-credited in the app's footer. Each artwork also stores its `sourceUrl` so the
-UI can link back to the original record.
+Licensing: Wikidata is CC0 1.0, Commons images are freely licensed, and both are
+credited in the app's footer. Each place also stores `sourceName` and `sourceUrl`
+so the UI can link back to the original record.
 
 ### What happens if the geocoding service is down or rate-limits you?
 
@@ -148,24 +206,30 @@ browser attaches automatically and JS can't read — at the cost of needing CSRF
 protection and more CORS setup. For a portfolio demo I chose the simpler one; in
 production handling real accounts I'd use the cookie.
 
-### Does the search use an index?
+### Does the text search use an index?
 
-No, and that's deliberate. It's a case-insensitive regex across five fields, and
-a regex that isn't anchored to the start of a string can't use an index — so it
-scans the collection. At this size that's irrelevant. The next step would be a
-MongoDB text index, which is fast but only matches whole words, so I'd be
-trading substring search for speed.
+No, and that's deliberate. It's a case-insensitive regex across title, region,
+description and tags, and a regex that isn't anchored to the start of a string
+can't use an index — so it scans the collection. At this size that's irrelevant.
+The next step would be a MongoDB text index, which is fast but only matches whole
+words, so I'd be trading substring search for speed.
 
-The indexes that *do* matter are declared in `models/artwork.js`: `createdAt`
-for the default sort, and `{ creator, createdAt }` for a contributor's page.
+The indexes that *do* matter are declared in `models/place.js`: `2dsphere` on
+`location` for the nearby query, `createdAt` for the default sort,
+`{ creator, createdAt }` for a contributor's page, and single-field indexes on
+`category` and `tags` for the filters.
 
 ### What does the `/facets` aggregation do?
 
-It produces the counts on the filter chips. `$unwind` turns one artwork with
-three tags into three rows, `$group` counts them per tag, `$sort` puts the
-popular ones first. The point is that the UI never offers a filter that would
-return zero results.
+It produces the counts on the filter chips — tags, categories and regions.
+`$unwind` turns one place with three tags into three rows, `$group` counts them
+per tag, `$sort` puts the popular ones first. The point is that the UI never
+offers a filter that would return zero results.
+
+The total comes from summing the category counts rather than a separate
+`countDocuments`: every place has exactly one category, so those counts already
+add up to the collection size.
 
 It's also the one endpoint with a `Cache-Control` header — the counts only
-change when someone adds or deletes an artwork, so a short shared cache saves a
+change when someone adds or deletes a place, so a short shared cache saves a
 function invocation on most page loads.

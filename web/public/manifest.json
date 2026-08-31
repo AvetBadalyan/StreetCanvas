@@ -1,25 +1,32 @@
 {
-  "short_name": "StreetCanvas",
-  "name": "StreetCanvas — public art, mapped",
+  "short_name": "Wander Armenia",
+  "name": "Wander Armenia — places worth the drive",
+  "description": "Find monasteries, fortresses, museums and mountains across Armenia, see what is near you, and plan a day around them.",
   "icons": [
     {
-      "src": "favicon.ico",
-      "sizes": "64x64 32x32 24x24 16x16",
-      "type": "image/x-icon"
+      "src": "/favicon.svg",
+      "type": "image/svg+xml",
+      "sizes": "any",
+      "purpose": "any"
     },
     {
-      "src": "logo192.png",
+      "src": "/favicon-192.png",
       "type": "image/png",
       "sizes": "192x192"
     },
     {
-      "src": "logo512.png",
+      "src": "/favicon-512.png",
       "type": "image/png",
       "sizes": "512x512"
+    },
+    {
+      "src": "/apple-touch-icon.png",
+      "type": "image/png",
+      "sizes": "180x180"
     }
   ],
-  "start_url": ".",
+  "start_url": "/",
   "display": "standalone",
-  "theme_color": "#12100e",
-  "background_color": "#12100e"
+  "theme_color": "#4f46e5",
+  "background_color": "#0e0e13"
 }

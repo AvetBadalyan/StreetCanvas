@@ -1,0 +1,205 @@
+@use "../styles/mixins" as *;
+
+.trip-bar {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: 30;
+  background: var(--surface-raised);
+  border-top: 1px solid var(--border);
+  box-shadow: var(--shadow-lg);
+}
+
+.trip-bar__inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  max-width: var(--content-max);
+  margin: 0 auto;
+  padding: 0.7rem 1rem;
+}
+
+.trip-bar__count {
+  font-size: 0.9375rem;
+  color: var(--text-muted);
+
+  strong {
+    color: var(--text);
+  }
+
+  em {
+    font-style: normal;
+    font-variant-numeric: tabular-nums;
+  }
+}
+
+.trip-bar__actions {
+  display: flex;
+  gap: 0.5rem;
+}
+
+// --- Expanded panel ---------------------------------------------------------
+
+.trip-panel {
+  position: fixed;
+  left: 50%;
+  transform: translateX(-50%);
+  bottom: 3.6rem;
+  z-index: 29;
+  width: min(96vw, var(--content-max));
+  max-height: min(76vh, 40rem);
+  display: flex;
+  flex-direction: column;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg) var(--radius-lg) 0 0;
+  box-shadow: var(--shadow-lg);
+  overflow: hidden;
+}
+
+.trip-panel__header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 1rem 1.25rem;
+  border-bottom: 1px solid var(--border);
+
+  h2 {
+    font-size: 1.1rem;
+  }
+
+  p {
+    margin: 0.2rem 0 0;
+    font-size: 0.875rem;
+    color: var(--text-muted);
+    font-variant-numeric: tabular-nums;
+  }
+}
+
+.trip-panel__body {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 0;
+  overflow: hidden;
+
+  @include desktop {
+    grid-template-columns: minmax(18rem, 24rem) 1fr;
+  }
+}
+
+.trip-panel__stops {
+  list-style: none;
+  margin: 0;
+  padding: 0.75rem;
+  overflow-y: auto;
+  max-height: 22rem;
+
+  li {
+    display: flex;
+    align-items: center;
+    gap: 0.7rem;
+    padding: 0.5rem;
+    border-radius: var(--radius);
+
+    &:hover {
+      background: var(--surface-hover);
+    }
+
+    img {
+      width: 3rem;
+      height: 3rem;
+      object-fit: cover;
+      border-radius: var(--radius-sm);
+      flex-shrink: 0;
+    }
+
+    button {
+      margin-left: auto;
+      border: none;
+      background: transparent;
+      color: var(--text-subtle);
+      font-size: 1.25rem;
+      line-height: 1;
+      cursor: pointer;
+      padding: 0.2rem 0.4rem;
+      border-radius: var(--radius-sm);
+
+      &:hover {
+        color: var(--danger);
+        background: var(--danger-soft);
+      }
+    }
+  }
+}
+
+.trip-panel__index {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.5rem;
+  height: 1.5rem;
+  flex-shrink: 0;
+  border-radius: 50%;
+  background: var(--accent);
+  color: var(--accent-contrast);
+  font-size: 0.75rem;
+  font-weight: 700;
+}
+
+.trip-panel__stop-text {
+  min-width: 0;
+
+  strong {
+    display: block;
+    font-size: 0.9375rem;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  span {
+    font-size: 0.8125rem;
+    color: var(--text-subtle);
+  }
+}
+
+.trip-panel__map {
+  min-height: 16rem;
+  border-top: 1px solid var(--border);
+
+  @include desktop {
+    border-top: none;
+    border-left: 1px solid var(--border);
+  }
+}
+
+.trip-panel__footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  padding: 0.85rem 1.25rem;
+  border-top: 1px solid var(--border);
+}
+
+.trip-panel__caveat {
+  margin: 0;
+  font-size: 0.75rem;
+  color: var(--text-subtle);
+  max-width: 34rem;
+}
+
+.trip-panel__actions {
+  display: flex;
+  gap: 0.5rem;
+  margin-left: auto;
+}
+
+// The bar overlays the bottom of the page, so give content room to scroll past.
+body:has(.trip-bar) main {
+  padding-bottom: 4.5rem;
+}

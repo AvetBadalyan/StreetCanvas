@@ -22,11 +22,11 @@ const NavLinks = () => {
       {auth.isLoggedIn ? (
         <>
           <li>
-            <NavLink to={`/contributors/${auth.userId}`}>My finds</NavLink>
+            <NavLink to="/saved">My places</NavLink>
           </li>
           <li>
-            <NavLink to="/artworks/new" className="nav-links__cta">
-              Add a find
+            <NavLink to="/places/new" className="nav-links__cta">
+              Add a place
             </NavLink>
           </li>
           <li className="nav-links__account">
@@ -47,6 +47,7 @@ const NavLinks = () => {
           </NavLink>
         </li>
       )}
+
     </ul>
   );
 };

@@ -4,42 +4,143 @@
 // changed in one place rather than hunted through twenty stylesheets. The old
 // version of this app hardcoded hex values (and a handful of `$color_1`-style
 // variables) inside each component.
+//
+// The names are semantic (`--surface`, not `--grey-800`), so a component never
+// needs to know which theme is active - it asks for "the raised surface colour"
+// and gets whatever that means right now.
+//
+// Theme resolution, in order of priority:
+//   1. [data-theme="light"|"dark"] on <html>  - the visitor chose explicitly
+//   2. prefers-color-scheme                   - follow the operating system
+//   3. the :root defaults below               - dark
 
-:root {
-  // --- Surfaces -----------------------------------------------------------
-  // A warm near-black rather than a blue-black: photographs of painted walls
-  // sit on it without the colour cast a cool grey introduces.
-  --bg: #12100e;
+@mixin dark-palette {
+  color-scheme: dark;
+
+  --bg: #0e0e13;
   --bg-gradient: radial-gradient(
-      1200px 600px at 15% -10%,
-      rgba(245, 158, 11, 0.09),
+      1100px 600px at 15% -10%,
+      rgba(129, 140, 248, 0.1),
       transparent 60%
     ),
-    radial-gradient(900px 500px at 90% 0%, rgba(236, 72, 153, 0.05), transparent 55%);
-  --surface: #1c1917;
-  --surface-raised: #221f1c;
-  --surface-hover: #2a2622;
-  --border: #37312c;
-  --border-strong: #4a423b;
+    radial-gradient(900px 500px at 88% 0%, rgba(56, 189, 248, 0.06), transparent 55%);
+  --surface: #17171f;
+  --surface-raised: #1d1d27;
+  --surface-hover: #24242f;
+  --border: #2c2c39;
+  --border-strong: #70708a;
 
-  // --- Text ---------------------------------------------------------------
-  --text: #fafaf9;
-  --text-muted: #a8a29e;
-  --text-subtle: #78716c;
+  --text: #f4f4f6;
+  --text-muted: #a5a5b5;
+  --text-subtle: #7b7b8c;
 
-  // --- Accent -------------------------------------------------------------
-  --accent: #f59e0b;
-  --accent-hover: #fbbf24;
-  --accent-soft: rgba(245, 158, 11, 0.14);
-  --accent-border: rgba(245, 158, 11, 0.35);
+  --accent: #818cf8;
+  --accent-hover: #a5b4fc;
+  --accent-soft: rgba(129, 140, 248, 0.16);
+  --accent-border: rgba(129, 140, 248, 0.38);
   // Text placed on top of a filled accent surface.
-  --accent-contrast: #1c1917;
+  --accent-contrast: #14141b;
 
-  --danger: #ef4444;
+  --danger: #dc2626;
   --danger-hover: #f87171;
-  --danger-soft: rgba(239, 68, 68, 0.14);
+  --danger-soft: rgba(239, 68, 68, 0.16);
   --success: #34d399;
+  --success-soft: rgba(52, 211, 153, 0.16);
 
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.4);
+  --shadow: 0 4px 16px rgba(0, 0, 0, 0.45);
+  --shadow-lg: 0 16px 48px rgba(0, 0, 0, 0.55);
+
+  // Translucent layers. These were hardcoded rgba() values in each component,
+  // which is exactly why the header stayed dark in light mode.
+  --header-bg: rgba(23, 23, 31, 0.82);
+  --scrim: rgba(6, 6, 10, 0.72);
+  --overlay: rgba(14, 14, 19, 0.72);
+  --empty-bg: rgba(23, 23, 31, 0.4);
+  --map-attribution-bg: rgba(14, 14, 19, 0.8);
+
+  --accent-ring: rgba(129, 140, 248, 0.3);
+  --danger-border: rgba(239, 68, 68, 0.4);
+  --danger-ring: rgba(239, 68, 68, 0.18);
+  --on-danger: #ffffff;
+
+  // OpenStreetMap only publishes a light basemap, so it is inverted here.
+  --map-tile-filter: invert(1) hue-rotate(180deg) brightness(0.92) contrast(0.88)
+    saturate(0.55);
+}
+
+@mixin light-palette {
+  color-scheme: light;
+
+  --bg: #f7f7fa;
+  --bg-gradient: radial-gradient(
+      1100px 600px at 15% -10%,
+      rgba(99, 102, 241, 0.08),
+      transparent 60%
+    ),
+    radial-gradient(900px 500px at 88% 0%, rgba(14, 165, 233, 0.05), transparent 55%);
+  --surface: #ffffff;
+  --surface-raised: #ffffff;
+  --surface-hover: #eef0f5;
+  --border: #e2e4ec;
+  --border-strong: #8e93a8;
+
+  --text: #16161d;
+  --text-muted: #5a5a6b;
+  --text-subtle: #83839a;
+
+  --accent: #4f46e5;
+  --accent-hover: #4338ca;
+  --accent-soft: rgba(79, 70, 229, 0.1);
+  --accent-border: rgba(79, 70, 229, 0.3);
+  --accent-contrast: #ffffff;
+
+  --danger: #dc2626;
+  --danger-hover: #b91c1c;
+  --danger-soft: rgba(220, 38, 38, 0.1);
+  --success: #059669;
+  --success-soft: rgba(5, 150, 105, 0.12);
+
+  --shadow-sm: 0 1px 2px rgba(16, 16, 29, 0.06);
+  --shadow: 0 4px 16px rgba(16, 16, 29, 0.08);
+  --shadow-lg: 0 16px 48px rgba(16, 16, 29, 0.14);
+
+  --header-bg: rgba(255, 255, 255, 0.85);
+  --scrim: rgba(16, 16, 29, 0.45);
+  --overlay: rgba(255, 255, 255, 0.75);
+  --empty-bg: rgba(255, 255, 255, 0.6);
+  --map-attribution-bg: rgba(255, 255, 255, 0.85);
+
+  --accent-ring: rgba(79, 70, 229, 0.25);
+  --danger-border: rgba(220, 38, 38, 0.35);
+  --danger-ring: rgba(220, 38, 38, 0.16);
+  --on-danger: #ffffff;
+
+  // The basemap is already light; leave it alone.
+  --map-tile-filter: none;
+}
+
+:root {
+  @include dark-palette;
+}
+
+// No explicit choice yet: follow the operating system.
+@media (prefers-color-scheme: light) {
+  :root:not([data-theme]) {
+    @include light-palette;
+  }
+}
+
+// An explicit choice always wins.
+[data-theme="dark"] {
+  @include dark-palette;
+}
+
+[data-theme="light"] {
+  @include light-palette;
+}
+
+:root {
   // --- Type ---------------------------------------------------------------
   --font-display: "Space Grotesk", "Segoe UI", sans-serif;
   --font-body: "Inter", "Segoe UI", sans-serif;
@@ -49,10 +150,6 @@
   --radius: 10px;
   --radius-lg: 16px;
   --radius-pill: 999px;
-
-  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.4);
-  --shadow: 0 4px 16px rgba(0, 0, 0, 0.45);
-  --shadow-lg: 0 16px 48px rgba(0, 0, 0, 0.55);
 
   // --- Motion -------------------------------------------------------------
   --transition: 160ms cubic-bezier(0.4, 0, 0.2, 1);

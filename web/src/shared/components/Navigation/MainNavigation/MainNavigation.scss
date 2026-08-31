@@ -7,7 +7,7 @@
   width: 100%;
   height: var(--header-height);
   z-index: 20;
-  background: rgba(18, 16, 14, 0.82);
+  background: var(--header-bg);
   backdrop-filter: blur(12px);
   border-bottom: 1px solid var(--border);
 }

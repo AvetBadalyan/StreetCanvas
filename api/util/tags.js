@@ -1,4 +1,4 @@
-const { MAX_TAGS } = require("../models/artwork");
+const { MAX_TAGS } = require("../models/place");
 
 /**
  * Tags arrive either as a comma-separated string (multipart form posts cannot

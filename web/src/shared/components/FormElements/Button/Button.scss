@@ -92,12 +92,12 @@
 
 .button--danger {
   background: var(--danger-soft);
-  border-color: rgba(239, 68, 68, 0.4);
+  border-color: var(--danger-border);
   color: var(--danger-hover);
 
   &:hover:not(:disabled) {
     background: var(--danger);
-    color: #fff;
+    color: var(--on-danger);
     border-color: var(--danger);
   }
 }

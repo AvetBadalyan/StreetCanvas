@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 
-import { fetchFacets } from "../api/artworks";
+import { fetchFacets } from "../api/places";
 
 /**
  * The most-used tags, offered as one-click suggestions in the tag editor.

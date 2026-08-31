@@ -92,7 +92,7 @@ const ImageUpload = ({ id, label = "Photo", hint, onInput }) => {
         onDrop={dropHandler}
       >
         {previewUrl ? (
-          <img src={previewUrl} alt="Selected artwork preview" />
+          <img src={previewUrl} alt="Selected photo preview" />
         ) : (
           <div className="image-upload__placeholder">
             <span className="image-upload__icon" aria-hidden="true">

@@ -1,7 +1,7 @@
 {
-  "name": "streetcanvas-api",
+  "name": "wander-armenia-api",
   "version": "2.0.0",
-  "description": "REST API for StreetCanvas - an atlas of public art.",
+  "description": "REST API for Wander Armenia - find and plan places worth visiting in Armenia.",
   "main": "server.js",
   "engines": {
     "node": ">=18"
@@ -11,7 +11,7 @@
     "dev": "nodemon server.js",
     "dev:demo": "node scripts/dev-server.js",
     "seed": "node scripts/seed.js",
-    "fetch:art": "node scripts/fetch-public-art.js"
+    "fetch:places": "node scripts/fetch-places.js"
   },
   "author": "Avet Badalyan",
   "license": "ISC",

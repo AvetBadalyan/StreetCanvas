@@ -37,7 +37,7 @@
 
 .server-banner--offline {
   background: var(--danger-soft);
-  border-bottom-color: rgba(239, 68, 68, 0.4);
+  border-bottom-color: var(--danger-border);
 
   p {
     color: var(--danger-hover);

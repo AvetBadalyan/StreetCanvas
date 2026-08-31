@@ -7,7 +7,7 @@ const REQUEST_TIMEOUT_MS = 8000;
 // requests that omit one, which is easy to miss because it fails as an empty
 // result set rather than an error.
 const USER_AGENT =
-  process.env.GEOCODER_USER_AGENT || "StreetCanvas/1.0 (portfolio project)";
+  process.env.GEOCODER_USER_AGENT || "WanderArmenia/1.0 (portfolio project)";
 
 // The same handful of addresses get geocoded repeatedly while browsing, and the
 // public endpoint is rate limited to ~1 req/s, so keep recent lookups in memory.
@@ -24,7 +24,7 @@ const remember = (key, value) => {
 /**
  * Resolves a free-text address to coordinates.
  * Throws an HttpError rather than returning null: a null here used to flow
- * straight into `new Artwork({ location: null })` and surface as an opaque
+ * straight into `new Place({ location: null })` and surface as an opaque
  * mongoose validation failure instead of a useful message.
  */
 const getCoordsForAddress = async (address) => {

@@ -1,0 +1,203 @@
+@use "../../../styles/mixins" as *;
+
+.filters {
+  margin-bottom: 1.75rem;
+}
+
+.filters__row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.6rem;
+  align-items: stretch;
+}
+
+.filters__search {
+  position: relative;
+  flex: 1 1 16rem;
+  min-width: 0;
+
+  input {
+    width: 100%;
+    font: inherit;
+    color: var(--text);
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 0.6rem 0.8rem 0.6rem 2.4rem;
+    transition: border-color var(--transition), box-shadow var(--transition);
+
+    &::placeholder {
+      color: var(--text-subtle);
+    }
+
+    &:focus {
+      outline: none;
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px var(--accent-soft);
+    }
+
+    // Chrome draws its own clear button that clashes with the dark field.
+    &::-webkit-search-cancel-button {
+      filter: invert(0.7);
+    }
+  }
+}
+
+.filters__search-icon {
+  position: absolute;
+  left: 0.85rem;
+  top: 50%;
+  transform: translateY(-50%) rotate(-45deg);
+  color: var(--text-subtle);
+  pointer-events: none;
+}
+
+.filters__select {
+  font: inherit;
+  font-size: 0.9375rem;
+  color: var(--text);
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 0.6rem 0.8rem;
+  cursor: pointer;
+
+  &:focus {
+    outline: none;
+    border-color: var(--accent);
+  }
+
+  option {
+    background: var(--surface-raised);
+  }
+}
+
+.filters__view {
+  display: flex;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 3px;
+  gap: 3px;
+
+  button {
+    font: inherit;
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: var(--text-muted);
+    background: transparent;
+    border: none;
+    border-radius: calc(var(--radius) - 3px);
+    padding: 0.35rem 0.85rem;
+    cursor: pointer;
+    transition: background var(--transition), color var(--transition);
+
+    &:hover {
+      color: var(--text);
+    }
+
+    &.is-active {
+      background: var(--accent);
+      color: var(--accent-contrast);
+    }
+  }
+}
+
+.filters__tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  margin-top: 0.85rem;
+
+  button {
+    @include chip;
+    font-size: 0.8125rem;
+    color: var(--text-muted);
+    background: var(--surface);
+    border: 1px solid var(--border);
+    padding: 0.25rem 0.7rem;
+    cursor: pointer;
+
+    span {
+      font-size: 0.6875rem;
+      color: var(--text-subtle);
+      font-variant-numeric: tabular-nums;
+    }
+
+    &:hover {
+      color: var(--text);
+      border-color: var(--border-strong);
+    }
+
+    &.is-active {
+      color: var(--accent);
+      background: var(--accent-soft);
+      border-color: var(--accent-border);
+
+      span {
+        color: var(--accent);
+      }
+    }
+  }
+}
+
+.filters__summary {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-top: 1rem;
+  font-size: 0.875rem;
+  color: var(--text-subtle);
+
+  button {
+    font: inherit;
+    font-size: 0.875rem;
+    color: var(--accent);
+    background: none;
+    border: none;
+    padding: 0;
+    cursor: pointer;
+
+    &:hover {
+      text-decoration: underline;
+    }
+  }
+}
+
+// "Near me" toggle. Mirrors the pill styling of the view switcher so the row
+// reads as one group of controls.
+.filters__near {
+  @include chip;
+  font-size: 0.9375rem;
+  font-weight: 500;
+  padding: 0.6rem 0.9rem;
+  cursor: pointer;
+  color: var(--text-muted);
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  white-space: nowrap;
+
+  &:hover:not(:disabled) {
+    color: var(--text);
+    border-color: var(--border-strong);
+  }
+
+  &:disabled {
+    opacity: 0.6;
+    cursor: progress;
+  }
+
+  &.is-on {
+    background: var(--accent);
+    border-color: var(--accent);
+    color: var(--accent-contrast);
+  }
+}
+
+.filters__note {
+  margin: 0.75rem 0 0;
+  font-size: 0.8125rem;
+  color: var(--danger-hover);
+}

@@ -147,8 +147,8 @@ main {
 // desaturated here to match the rest of the UI. Only the tile pane is filtered
 // - markers and popups live in other panes and keep their real colours.
 .leaflet-tile-pane {
-  filter: invert(1) hue-rotate(180deg) brightness(0.92) contrast(0.88)
-    saturate(0.55);
+  // Set per theme in _tokens.scss: inverted in dark, untouched in light.
+  filter: var(--map-tile-filter);
 }
 
 .leaflet-popup-content-wrapper,
@@ -164,7 +164,7 @@ main {
 }
 
 .leaflet-control-attribution {
-  background: rgba(18, 16, 14, 0.8) !important;
+  background: var(--map-attribution-bg) !important;
   color: var(--text-subtle) !important;
 
   a {

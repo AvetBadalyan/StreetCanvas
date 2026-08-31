@@ -1,16 +1,18 @@
-# StreetCanvas
+# Wander Armenia
 
-An atlas of public art — the sculptures, murals, monuments and fountains you walk
-past every day. Search them by artist, city or material, see them on a map, and
-add the ones you find yourself.
+Places worth the drive — the monasteries, fortresses, lakes and mountains you
+could reach this weekend. Search them by name, region or category, see what's
+near you, save the ones you've been to and the ones you still want to see, and
+string a few of them into a day out.
 
 The catalogue is seeded from **Wikidata**, so the content is real: actual
-artworks with their actual sculptors, dates and materials, photographed by
-Wikimedia Commons contributors.
+Armenian places with their actual provinces and dates, photographed by Wikimedia
+Commons contributors.
 
-**Live demo:** https://streetcanvas.vercel.app · **Demo login:** `demo@streetcanvas.demo` / `demo1234`
+**Live:** https://wanderarmenia.vercel.app · **API:** https://wanderarmenia-api.vercel.app
+· **Demo login:** `demo@wanderarmenia.demo` / `demo1234`
 
-![StreetCanvas explore page](docs/screenshot-explore.png)
+![Wander Armenia explore page](docs/screenshot-explore.png)
 
 ---
 
@@ -26,8 +28,8 @@ npm run dev:demo  # starts both, with a throwaway in-memory database
 Then open <http://localhost:3000>. The API runs on port 5000.
 
 `dev:demo` boots an in-memory MongoDB replica set, seeds it with the bundled
-catalogue of ~90 artworks, and throws it all away on exit — so anyone can clone this
-repo and see the working app in one command.
+catalogue of 461 places, and throws it all away on exit — so anyone can clone
+this repo and see the working app in one command.
 
 To run against a real database instead, copy `api/.env.example` to `api/.env`,
 fill it in, then:
@@ -44,20 +46,30 @@ npm run dev
 | `npm run dev:demo` | Both servers, API against a throwaway in-memory database |
 | `npm run build` | Production build of the web app |
 | `npm run seed` | Load the bundled catalogue into the configured database |
-| `npm run fetch:art` | Re-download the catalogue from Wikidata (rarely needed) |
+| `npm run start:api` | Run the API alone as a long-lived process |
+| `npm run fetch:places` | Re-download the catalogue from Wikidata (rarely needed) |
 
 ---
 
 ## What's in it
 
-- **Real catalogue data** — ~90 artworks imported from Wikidata's SPARQL
-  endpoint and normalised into the app's schema, each linking back to its source
-  record. Cached in the repo (`api/scripts/public-art.json`) so seeding is
-  deterministic and needs no network.
-- **Explore feed** — search by title, artist, city or tag; filter by tag and art
-  form with live counts; sort and paginate. Filter state lives in the URL, so any
-  view is linkable and the back button works.
-- **Map view** — every result plotted on a dark Leaflet basemap, auto-fitted.
+- **Real catalogue data** — 461 places imported from Wikidata's SPARQL endpoint
+  and normalised into the app's schema, each linking back to its source record.
+  Cached in the repo (`api/scripts/places.json`) so seeding is deterministic and
+  needs no network.
+- **Explore feed** — search by title, region, description or tag; filter by tag
+  and category with live counts; sort and paginate. Filter state lives in the
+  URL, so any view is linkable and the back button works.
+- **Near me** — `?near=lat,lng&radius=km` sorts by real distance and reports it,
+  answered by a `2dsphere` index in the database rather than by measuring every
+  document in JavaScript.
+- **Map view** — every result plotted on a Leaflet basemap, auto-fitted.
+- **Personal lists** — a signed-in visitor keeps a **visited** and a **wishlist**
+  list. Saving to one removes it from the other, because somewhere you have been
+  is no longer somewhere you want to go.
+- **Day planner** — pick a few stops and the browser orders them nearest-first,
+  estimates distance and time, and hands off to a Google Maps directions link.
+  Straight-line maths, no routing service, no API key — and the UI says so.
 - **Contribute** — drag-and-drop photo upload, and the API geocodes the address
   you type onto the map.
 - **Accounts** — JWT auth, plus a one-click demo login so nobody has to sign up
@@ -88,9 +100,9 @@ independently. The root package only wires them together for development.
 ## Design notes
 
 Both halves have a `NOTES.md` explaining the decisions that aren't obvious from
-the code — why writes use a transaction, why the JWT lives where it does, why
-the search can't use an index, why some validation is deliberately duplicated
-between client and server.
+the code — why writes use a transaction, why coordinates are stored as GeoJSON,
+why the JWT lives where it does, why the search can't use an index, why some
+validation is deliberately duplicated between client and server.
 
 - [api/NOTES.md](api/NOTES.md)
 - [web/NOTES.md](web/NOTES.md)
@@ -113,7 +125,7 @@ this repository.
 
 ## History
 
-This started as a two-repo practice project following a course, and was rebuilt
-into StreetCanvas. Both original repositories' commit histories are preserved
-here — `git log --follow api/app.js` and `git log web/src/index.jsx` both reach
-back to January 2024.
+This started as a two-repo practice project following a course, was rebuilt into
+an atlas of public art, and is now Wander Armenia. Both original repositories'
+commit histories are preserved here — `git log --follow api/app.js` and
+`git log web/src/index.jsx` both reach back to January 2024.

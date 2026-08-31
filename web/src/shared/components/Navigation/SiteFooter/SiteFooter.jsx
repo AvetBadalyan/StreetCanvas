@@ -6,8 +6,8 @@ const SiteFooter = () => (
   <footer className="site-footer">
     <div className="site-footer__inner">
       <p>
-        <strong>StreetCanvas</strong> — an atlas of public art. Built with
-        React, Node, Express and MongoDB.
+        <strong>Wander Armenia</strong> — places worth visiting across Armenia.
+        Built with React, Node, Express and MongoDB.
         <br />
         Catalogue data from{" "}
         <a href="https://www.wikidata.org" target="_blank" rel="noreferrer">
@@ -21,14 +21,14 @@ const SiteFooter = () => (
       </p>
       <nav>
         <a
-          href="https://github.com/AvetBadalyan/MERN-practice-frontend"
+          href="https://github.com/AvetBadalyan/wander-armenia"
           target="_blank"
           rel="noreferrer"
         >
           Frontend
         </a>
         <a
-          href="https://github.com/AvetBadalyan/MERN-practice-backend"
+          href="https://github.com/AvetBadalyan/wander-armenia"
           target="_blank"
           rel="noreferrer"
         >

@@ -9,8 +9,8 @@ const mongoose = require("mongoose");
  * reuse a warm instance, so we connect roughly once per instance rather than
  * once per request.
  */
-const cache = global.__streetcanvasMongoose || { conn: null, promise: null };
-global.__streetcanvasMongoose = cache;
+const cache = global.__wanderArmeniaMongoose || { conn: null, promise: null };
+global.__wanderArmeniaMongoose = cache;
 
 const connectToDatabase = async () => {
   if (cache.conn) return cache.conn;

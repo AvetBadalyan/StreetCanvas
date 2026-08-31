@@ -1,7 +1,7 @@
 /**
  * Tag rules, mirrored from the API.
  *
- * Source of truth is the backend (`util/tags.js` and `models/artwork.js`); the
+ * Source of truth is the backend (`util/tags.js` and `models/place.js`); the
  * server re-normalises everything it receives because it cannot trust a client.
  * This copy exists so a tag is accepted or rejected as you type rather than
  * silently rewritten after you submit — the two must agree, or the chip you see

@@ -1,11 +1,11 @@
 /**
- * Populates the database with the bundled public-art dataset.
+ * Populates the database with the bundled catalogue of Armenian places.
  *
  *   npm run seed            add anything not already present
- *   npm run seed -- --reset delete all users and artworks first
+ *   npm run seed -- --reset delete all users and places first
  *
- * The content comes from scripts/public-art.json, fetched from Wikidata by
- * `npm run fetch:art`. Seeding itself does no network calls, so it is fast,
+ * The content comes from scripts/places.json, fetched from Wikidata by
+ * `npm run fetch:places`. Seeding itself does no network calls, so it is fast,
  * deterministic and works offline.
  *
  * A deployed portfolio project that greets visitors with an empty grid reads as
@@ -18,40 +18,40 @@ const mongoose = require("mongoose");
 const bcrypt = require("bcryptjs");
 
 const User = require("../models/user");
-const Artwork = require("../models/artwork");
+const Place = require("../models/place");
 
 const DEMO_PASSWORD = "demo1234";
 
 // One account owns the imported records. Inventing several "contributors" for
 // data that came from Wikidata would misattribute it; this way the catalogue is
-// honestly credited and the demo login can still edit and delete.
+// honestly credited and the demo login can still edit, delete and save places.
 const DEMO_USER = {
   name: "Open Data",
-  email: "demo@streetcanvas.demo",
+  email: "demo@wanderarmenia.demo",
   image:
     "https://commons.wikimedia.org/wiki/Special:FilePath/Wikidata-logo-en.svg?width=300",
 };
 
 const loadDataset = () => {
   try {
-    return require("./public-art.json");
+    return require("./places.json");
   } catch {
     throw new Error(
-      "scripts/public-art.json is missing. Run `npm run fetch:art` to download the dataset first."
+      "scripts/places.json is missing. Run `npm run fetch:places` to download the catalogue first."
     );
   }
 };
 
 const seedDatabase = async ({ reset = false, log = console.log } = {}) => {
-  const { artworks: dataset } = loadDataset();
+  const { places: dataset } = loadDataset();
 
   if (reset) {
-    const [removedArtworks, removedUsers] = await Promise.all([
-      Artwork.deleteMany({}),
+    const [removedPlaces, removedUsers] = await Promise.all([
+      Place.deleteMany({}),
       User.deleteMany({}),
     ]);
     log(
-      `Reset: removed ${removedUsers.deletedCount} users and ${removedArtworks.deletedCount} artworks`
+      `Reset: removed ${removedUsers.deletedCount} users and ${removedPlaces.deletedCount} places`
     );
   }
 
@@ -60,29 +60,39 @@ const seedDatabase = async ({ reset = false, log = console.log } = {}) => {
     owner = await User.create({
       ...DEMO_USER,
       password: await bcrypt.hash(DEMO_PASSWORD, 12),
-      artworks: [],
+      places: [],
     });
     log(`+ created contributor ${DEMO_USER.email}`);
   }
 
-  let created = 0;
-  let skipped = 0;
+  // Fetch the existing titles once instead of querying per record: seeding 460
+  // places would otherwise mean 460 round trips.
+  const existing = new Set(
+    (await Place.find({ creator: owner._id }).select("title").lean()).map(
+      (p) => p.title
+    )
+  );
 
-  for (const entry of dataset) {
-    const exists = await Artwork.findOne({ title: entry.title, creator: owner._id });
-    if (exists) {
-      skipped += 1;
-      continue;
-    }
+  const toInsert = dataset
+    .filter((entry) => !existing.has(entry.title))
+    .map(({ location, ...entry }) => ({
+      ...entry,
+      location: Place.toGeoPoint(location),
+      creator: owner._id,
+    }));
 
-    const artwork = await Artwork.create({ ...entry, creator: owner._id });
-    owner.artworks.push(artwork._id);
-    created += 1;
+  if (toInsert.length > 0) {
+    const created = await Place.insertMany(toInsert);
+    owner.places.push(...created.map((place) => place._id));
+    await owner.save();
   }
 
-  await owner.save();
-
-  return { created, skipped, demoEmail: DEMO_USER.email, demoPassword: DEMO_PASSWORD };
+  return {
+    created: toInsert.length,
+    skipped: dataset.length - toInsert.length,
+    demoEmail: DEMO_USER.email,
+    demoPassword: DEMO_PASSWORD,
+  };
 };
 
 const runCli = async () => {
@@ -97,14 +107,14 @@ const runCli = async () => {
   const result = await seedDatabase({ reset: process.argv.includes("--reset") });
 
   console.log(
-    `Done. ${result.created} artworks created, ${result.skipped} already present.\n` +
+    `Done. ${result.created} places created, ${result.skipped} already present.\n` +
       `Demo login: ${result.demoEmail} / ${result.demoPassword}`
   );
 
   await mongoose.connection.close();
 };
 
-module.exports = { seedDatabase, DEMO_PASSWORD, DEMO_USER };
+module.exports = { seedDatabase };
 
 // Only run when invoked directly, not when required by the dev server.
 if (require.main === module) {

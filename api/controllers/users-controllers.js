@@ -55,7 +55,7 @@ const signup = asyncHandler(async (req, res, next) => {
     image: image.url,
     imagePublicId: image.publicId,
     password: await bcrypt.hash(password, 12),
-    artworks: [],
+    places: [],
   });
 
   try {

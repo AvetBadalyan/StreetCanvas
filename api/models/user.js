@@ -9,7 +9,17 @@ const userSchema = new Schema(
     password: { type: String, required: true, minlength: 6 },
     image: { type: String, required: true },
     imagePublicId: { type: String, default: null },
-    artworks: [{ type: mongoose.Types.ObjectId, ref: "Artwork" }],
+
+    // Places this user contributed.
+    places: [{ type: mongoose.Types.ObjectId, ref: "Place" }],
+
+    /**
+     * The visitor's own lists. Stored as references on the user rather than as
+     * a separate join collection: a person tracks tens of places, not
+     * thousands, so an array is the simpler and faster shape here.
+     */
+    visited: [{ type: mongoose.Types.ObjectId, ref: "Place" }],
+    wishlist: [{ type: mongoose.Types.ObjectId, ref: "Place" }],
   },
   { timestamps: true }
 );

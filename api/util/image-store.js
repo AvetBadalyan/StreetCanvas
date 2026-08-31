@@ -51,7 +51,7 @@ const uploadToCloudinary = (buffer) =>
   new Promise((resolve, reject) => {
     const stream = getCloudinary().uploader.upload_stream(
       {
-        folder: "streetcanvas",
+        folder: "wanderarmenia",
         public_id: uuid(),
         resource_type: "image",
         // Cap the stored resolution and let Cloudinary pick the best codec, so

@@ -14,7 +14,7 @@
   border-radius: 50%;
   background: var(--accent);
   border: 2px solid var(--accent-contrast);
-  box-shadow: 0 0 0 3px rgba(245, 158, 11, 0.28);
+  box-shadow: 0 0 0 3px var(--accent-ring);
   transition: transform var(--transition);
 }
 

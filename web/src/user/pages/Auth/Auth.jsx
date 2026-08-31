@@ -20,7 +20,7 @@ import "./Auth.scss";
 // A read-only-ish account seeded by `npm run seed`, so anyone reviewing this
 // project can get inside without inventing credentials first.
 const DEMO_CREDENTIALS = {
-  email: "demo@streetcanvas.demo",
+  email: "demo@wanderarmenia.demo",
   password: "demo1234",
 };
 
@@ -118,11 +118,11 @@ const Auth = () => {
       <div className="auth-card">
         {isLoading && <LoadingSpinner asOverlay />}
 
-        <h1>{isLoginMode ? "Welcome back" : "Join StreetCanvas"}</h1>
+        <h1>{isLoginMode ? "Welcome back" : "Join Wander Armenia"}</h1>
         <p className="auth-card__subtitle">
           {isLoginMode
-            ? "Sign in to add finds and manage the ones you've pinned."
-            : "Create an account to start pinning street art to the map."}
+            ? "Sign in to save places and add your own."
+            : "Create an account to save places and add your own."}
         </p>
 
         <form onSubmit={submitHandler}>
@@ -164,7 +164,7 @@ const Auth = () => {
             <ImageUpload
               id="image"
               label="Profile photo"
-              hint="Shown next to the finds you add."
+              hint="Shown next to the places you add."
               onInput={inputHandler}
             />
           )}
@@ -192,7 +192,7 @@ const Auth = () => {
           Explore with the demo account
         </Button>
         <p className="auth-card__demo-note">
-          No sign-up needed - browse and add finds as a sample contributor.
+          No sign-up needed - browse and add places as a sample contributor.
         </p>
 
         <button
