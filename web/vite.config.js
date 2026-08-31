@@ -10,9 +10,8 @@ export default defineConfig({
   },
 
   build: {
-    // Vite's default is `dist`. This project emits to `build` so the existing
-    // deploy configuration keeps working unchanged - Vercel's project settings
-    // and firebase.json both already point at `build`.
+    // Vite's default is `dist`. This project emits to `build` so the Vercel
+    // project's existing output-directory setting keeps working unchanged.
     outDir: "build",
     sourcemap: false,
   },

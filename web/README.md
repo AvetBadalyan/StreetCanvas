@@ -119,9 +119,8 @@ npm run build        # or from the repo root
 npm run preview      # serve the production build locally
 ```
 
-Output goes to `build/` rather than Vite's default `dist/`, so the existing
-Vercel and Firebase configuration keeps working unchanged.
+Output goes to `build/` rather than Vite's default `dist/`, so the Vercel
+project's existing output-directory setting keeps working unchanged.
 
 The app is a SPA, so any host needs a catch-all rewrite to `/index.html` —
-already configured in [`vercel.json`](vercel.json) and
-[`firebase.json`](firebase.json).
+already configured in [`vercel.json`](vercel.json).

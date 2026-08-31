@@ -102,9 +102,14 @@ The two halves deploy separately from this one repo:
 - **API → Vercel.** Set the project's *Root Directory* to `api`. It runs as a
   single serverless function (`api/api/index.js`) with a cached Mongoose
   connection. Environment variables are listed in `api/.env.example`.
-- **Web → Firebase Hosting** (or any static host). Set `VITE_API_URL` in
-  `web/.env.production` to the deployed API, then `npm run build` and deploy
-  `web/build`.
+- **Web → Vercel.** Set the project's *Root Directory* to `web`. It builds with
+  Vite and deploys automatically on every push to `main`. `VITE_API_URL` lives in
+  `web/.env.production`.
+
+The project's first home, `mern-project-front.web.app`, now serves a 301 redirect
+to the Vercel deployment so older links still work. That redirect is a one-off
+Firebase Hosting release; there is deliberately no Firebase configuration left in
+this repository.
 
 ## History
 
