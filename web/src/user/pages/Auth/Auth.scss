@@ -1,38 +1,38 @@
 .auth-page {
   display: flex;
   justify-content: center;
-  padding: 3rem 1rem 4rem;
+  padding: var(--space-7) var(--space-4) var(--space-8);
 }
 
 .auth-card {
   position: relative;
   width: 100%;
-  max-width: 26rem;
+  max-width: 41.6rem;
   background: var(--surface);
   border: 1px solid var(--border);
-  border-radius: var(--radius-lg);
+  border-radius: var(--radius);
   box-shadow: var(--shadow-lg);
-  padding: 2rem;
+  padding: var(--space-6);
 
   h1 {
-    font-size: 1.5rem;
+    font-size: var(--font-size-xl);
     letter-spacing: -0.02em;
   }
 }
 
 .auth-card__subtitle {
-  margin: 0.5rem 0 1.75rem;
+  margin: var(--space-2) 0 var(--space-6);
   color: var(--text-muted);
-  font-size: 0.9375rem;
+  font-size: var(--font-size-base);
 }
 
 .auth-card__divider {
   display: flex;
   align-items: center;
-  gap: 0.75rem;
-  margin: 1.5rem 0;
+  gap: var(--space-3);
+  margin: var(--space-5) 0;
   color: var(--text-subtle);
-  font-size: 0.8125rem;
+  font-size: var(--font-size-sm);
 
   &::before,
   &::after {
@@ -44,8 +44,8 @@
 }
 
 .auth-card__demo-note {
-  margin: 0.6rem 0 0;
-  font-size: 0.8125rem;
+  margin: var(--space-2) 0 0;
+  font-size: var(--font-size-sm);
   color: var(--text-subtle);
   text-align: center;
 }
@@ -53,13 +53,13 @@
 .auth-card__switch {
   display: block;
   width: 100%;
-  margin-top: 1.75rem;
-  padding-top: 1.25rem;
+  margin-top: var(--space-6);
+  padding-top: var(--space-5);
   border: none;
   border-top: 1px solid var(--border);
   background: none;
   font: inherit;
-  font-size: 0.875rem;
+  font-size: var(--font-size-sm);
   color: var(--text-muted);
   cursor: pointer;
 

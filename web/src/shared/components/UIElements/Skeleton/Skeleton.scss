@@ -3,7 +3,7 @@
 .skeleton-card {
   background: var(--surface);
   border: 1px solid var(--border);
-  border-radius: var(--radius-lg);
+  border-radius: var(--radius);
   overflow: hidden;
 }
 
@@ -13,18 +13,18 @@
 }
 
 .skeleton-card__body {
-  padding: 1rem 1.1rem 1.25rem;
+  padding: var(--space-4) var(--space-4) var(--space-5);
 }
 
 .skeleton-line {
-  height: 0.75rem;
-  border-radius: var(--radius-sm);
-  margin-bottom: 0.6rem;
+  height: 1.2rem;
+  border-radius: var(--radius);
+  margin-bottom: var(--space-2);
   @include shimmer;
 }
 
 .skeleton-line--title {
-  height: 1.1rem;
+  height: 1.76rem;
   width: 70%;
 }
 
@@ -34,13 +34,13 @@
 
 .skeleton-card__chips {
   display: flex;
-  gap: 0.4rem;
-  margin-top: 0.9rem;
+  gap: var(--space-2);
+  margin-top: var(--space-4);
 
   span {
     display: block;
-    height: 1.4rem;
-    width: 4rem;
+    height: 2.24rem;
+    width: 6.4rem;
     border-radius: var(--radius-pill);
     @include shimmer;
   }

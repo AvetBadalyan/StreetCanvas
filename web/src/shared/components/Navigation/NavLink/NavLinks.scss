@@ -6,7 +6,7 @@
   padding: 0;
   display: flex;
   flex-direction: column;
-  gap: 0.35rem;
+  gap: var(--space-1);
 
   a,
   button {
@@ -14,13 +14,13 @@
     width: 100%;
     text-align: left;
     font: inherit;
-    font-size: 0.9375rem;
+    font-size: var(--font-size-base);
     font-weight: 500;
     color: var(--text-muted);
     background: transparent;
     border: 1px solid transparent;
     border-radius: var(--radius);
-    padding: 0.5rem 0.75rem;
+    padding: var(--space-2) var(--space-3);
     text-decoration: none;
     cursor: pointer;
     transition: color var(--transition), background var(--transition),
@@ -51,7 +51,7 @@
   @include desktop {
     flex-direction: row;
     align-items: center;
-    gap: 0.25rem;
+    gap: var(--space-1);
 
     a,
     button {
@@ -64,17 +64,17 @@
 .nav-links__account {
   display: flex;
   align-items: center;
-  gap: 0.5rem;
+  gap: var(--space-2);
 
   @include desktop {
-    margin-left: 0.5rem;
-    padding-left: 0.75rem;
+    margin-left: var(--space-2);
+    padding-left: var(--space-3);
     border-left: 1px solid var(--border);
   }
 }
 
 .nav-links__avatar {
-  width: 1.85rem;
-  height: 1.85rem;
+  width: 2.96rem;
+  height: 2.96rem;
 }
 

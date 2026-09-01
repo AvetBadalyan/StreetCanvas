@@ -53,6 +53,29 @@ The token names are semantic (`--surface`, not `--grey-800`) for the same
 reason: a component asks for "the raised surface colour" and never needs to know
 which theme is active.
 
+### Why is `html`'s `font-size` set to `62.5%`?
+
+So every `rem` in the codebase reads directly as a multiple of 10px — `2.4rem`
+is 24px, no lookup table needed. The browser default is 16px, and 62.5% of that
+is 10px. It has to be a percentage rather than a fixed `10px`: a percentage is
+still relative to whatever the visitor's own browser font-size is, so someone
+running a larger default for accessibility still gets everything scaled up
+proportionally. A fixed pixel value would silently override that.
+
+Every spacing, font-size and layout dimension in `_tokens.scss` and the
+component stylesheets is denominated in `rem` on this basis. Border widths,
+shadow offsets and a handful of sub-pixel hover transforms are the deliberate
+exception — those shouldn't scale with text zoom, so they stay in `px`.
+
+### Why one radius, one spacing scale, one type scale?
+
+Earlier versions had three border-radius values, no spacing tokens at all (just
+whatever number a component needed at the time), and thirteen distinct
+font-sizes a couple of pixels apart from each other. None of that variety was
+doing useful work — it was drift, not design. `_tokens.scss` now defines a
+single `--radius`, an eight-step `--space-*` scale and a six-step
+`--font-size-*` scale, and every stylesheet was remapped onto them.
+
 ### Why doesn't the theme default to dark or light?
 
 Until the visitor presses the toggle, no `data-theme` attribute is written at

@@ -2,8 +2,8 @@
 
 .saved-tabs {
   display: flex;
-  gap: 0.35rem;
-  margin-bottom: 1.75rem;
+  gap: var(--space-1);
+  margin-bottom: var(--space-6);
   padding: 3px;
   background: var(--surface);
   border: 1px solid var(--border);
@@ -13,20 +13,20 @@
   button {
     display: inline-flex;
     align-items: center;
-    gap: 0.45rem;
+    gap: var(--space-2);
     font: inherit;
-    font-size: 0.9375rem;
+    font-size: var(--font-size-base);
     font-weight: 500;
     color: var(--text-muted);
     background: transparent;
     border: none;
     border-radius: calc(var(--radius) - 3px);
-    padding: 0.45rem 0.9rem;
+    padding: var(--space-2) var(--space-4);
     cursor: pointer;
     transition: background var(--transition), color var(--transition);
 
     span {
-      font-size: 0.75rem;
+      font-size: var(--font-size-xs);
       font-variant-numeric: tabular-nums;
       opacity: 0.75;
     }

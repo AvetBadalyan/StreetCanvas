@@ -3,34 +3,34 @@
   flex-direction: column;
   align-items: center;
   text-align: center;
-  padding: 3.5rem 1.5rem;
+  padding: var(--space-8) var(--space-5);
   border: 1px dashed var(--border-strong);
-  border-radius: var(--radius-lg);
+  border-radius: var(--radius);
   background: var(--empty-bg);
 
   h2 {
-    font-size: 1.25rem;
-    margin-bottom: 0.5rem;
+    font-size: var(--font-size-lg);
+    margin-bottom: var(--space-2);
   }
 
   p {
     margin: 0;
-    max-width: 32rem;
+    max-width: 51.2rem;
     color: var(--text-muted);
   }
 }
 
 .empty-state__icon {
-  font-size: 2.25rem;
+  font-size: var(--font-size-2xl);
   line-height: 1;
   color: var(--border-strong);
-  margin-bottom: 1rem;
+  margin-bottom: var(--space-4);
 }
 
 .empty-state__action {
-  margin-top: 1.5rem;
+  margin-top: var(--space-5);
   display: flex;
-  gap: 0.6rem;
+  gap: var(--space-2);
   flex-wrap: wrap;
   justify-content: center;
 }

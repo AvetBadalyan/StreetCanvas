@@ -6,7 +6,7 @@
   flex-direction: column;
   background: var(--surface);
   border: 1px solid var(--border);
-  border-radius: var(--radius-lg);
+  border-radius: var(--radius);
   overflow: hidden;
   transition: border-color var(--transition), transform var(--transition),
     box-shadow var(--transition);
@@ -48,23 +48,23 @@
   justify-content: center;
   height: 100%;
   color: var(--text-subtle);
-  font-size: 0.875rem;
+  font-size: var(--font-size-sm);
 }
 
 %media-badge {
   position: absolute;
-  top: 0.75rem;
-  padding: 0.2rem 0.6rem;
+  top: 1.2rem;
+  padding: var(--space-1) var(--space-2);
   border-radius: var(--radius-pill);
   backdrop-filter: blur(4px);
-  font-size: 0.75rem;
+  font-size: var(--font-size-xs);
   font-weight: 600;
   letter-spacing: 0.02em;
 }
 
 .place-card__category {
   @extend %media-badge;
-  left: 0.75rem;
+  left: 1.2rem;
   background: var(--surface-raised);
   border: 1px solid var(--border-strong);
   color: var(--text);
@@ -72,7 +72,7 @@
 
 .place-card__distance {
   @extend %media-badge;
-  right: 0.75rem;
+  right: 1.2rem;
   background: var(--accent);
   color: var(--accent-contrast);
   font-variant-numeric: tabular-nums;
@@ -80,24 +80,24 @@
 
 .place-card__body {
   flex: 1;
-  padding: 1rem 1.1rem 0.75rem;
+  padding: var(--space-4) var(--space-4) var(--space-3);
 }
 
 .place-card__title {
-  font-size: 1.0625rem;
+  font-size: var(--font-size-base);
   letter-spacing: -0.01em;
   @include clamp-lines(2);
 }
 
 .place-card__region {
-  margin: 0.2rem 0 0;
-  font-size: 0.875rem;
+  margin: var(--space-1) 0 0;
+  font-size: var(--font-size-sm);
   color: var(--accent);
 }
 
 .place-card__description {
-  margin: 0.6rem 0 0;
-  font-size: 0.875rem;
+  margin: var(--space-2) 0 0;
+  font-size: var(--font-size-sm);
   color: var(--text-muted);
   @include clamp-lines(3);
 }
@@ -106,17 +106,17 @@
   list-style: none;
   display: flex;
   flex-wrap: wrap;
-  gap: 0.35rem;
-  margin: 0.85rem 0 0;
+  gap: var(--space-1);
+  margin: var(--space-3) 0 0;
   padding: 0;
 
   button {
     @include chip;
-    font-size: 0.75rem;
+    font-size: var(--font-size-xs);
     color: var(--text-muted);
     background: var(--surface-hover);
     border: 1px solid transparent;
-    padding: 0.15rem 0.55rem;
+    padding: var(--space-1) var(--space-2);
     cursor: pointer;
 
     &:hover {
@@ -131,13 +131,13 @@
 .place-card__save {
   display: flex;
   flex-wrap: wrap;
-  gap: 0.35rem;
-  padding: 0 1.1rem 0.85rem;
+  gap: var(--space-1);
+  padding: 0 var(--space-4) var(--space-3);
 
   button {
     @include chip;
-    font-size: 0.8125rem;
-    padding: 0.3rem 0.7rem;
+    font-size: var(--font-size-sm);
+    padding: var(--space-1) var(--space-3);
     cursor: pointer;
     background: transparent;
     border: 1px solid var(--border-strong);
@@ -168,7 +168,7 @@
 }
 
 .place-card__save-prompt {
-  font-size: 0.8125rem;
+  font-size: var(--font-size-sm);
   color: var(--text-subtle);
   text-decoration: none;
 
@@ -184,16 +184,16 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 0.5rem;
-  padding: 0.6rem 0.75rem 0.6rem 1.1rem;
+  gap: var(--space-2);
+  padding: var(--space-2) var(--space-3) var(--space-2) var(--space-4);
   border-top: 1px solid var(--border);
 }
 
 .place-card__creator {
   display: inline-flex;
   align-items: center;
-  gap: 0.45rem;
-  font-size: 0.8125rem;
+  gap: var(--space-2);
+  font-size: var(--font-size-sm);
   color: var(--text-muted);
   text-decoration: none;
   min-width: 0;
@@ -210,17 +210,17 @@
 }
 
 .place-card__creator-avatar {
-  width: 1.5rem;
-  height: 1.5rem;
+  width: 2.4rem;
+  height: 2.4rem;
 }
 
 .place-card__actions {
   display: flex;
   align-items: center;
-  gap: 0.15rem;
+  gap: var(--space-1);
   flex-shrink: 0;
 }
 
 .place-card__map {
-  height: min(60vh, 26rem);
+  height: min(60vh, 41.6rem);
 }

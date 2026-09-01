@@ -4,11 +4,11 @@
   display: flex;
   flex-wrap: wrap;
   align-items: center;
-  gap: 0.4rem;
+  gap: var(--space-2);
   background: var(--bg);
   border: 1px solid var(--border);
   border-radius: var(--radius);
-  padding: 0.45rem 0.55rem;
+  padding: var(--space-2) var(--space-2);
   transition: border-color var(--transition), box-shadow var(--transition);
 
   &:focus-within {
@@ -17,13 +17,13 @@
   }
 
   input {
-    flex: 1 1 8rem;
-    min-width: 8rem;
+    flex: 1 1 12.8rem;
+    min-width: 12.8rem;
     border: none;
     background: transparent;
     color: var(--text);
     font: inherit;
-    padding: 0.2rem 0.15rem;
+    padding: var(--space-1) var(--space-1);
 
     &:focus {
       outline: none;
@@ -37,25 +37,25 @@
 
 .tag-chip {
   @include chip;
-  gap: 0.3rem;
+  gap: var(--space-1);
   background: var(--accent-soft);
   border: 1px solid var(--accent-border);
   color: var(--accent-hover);
-  padding: 0.2rem 0.35rem 0.2rem 0.65rem;
-  font-size: 0.8125rem;
+  padding: var(--space-1) var(--space-1) var(--space-1) var(--space-3);
+  font-size: var(--font-size-sm);
   font-weight: 500;
 
   button {
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    width: 1.15rem;
-    height: 1.15rem;
+    width: 1.84rem;
+    height: 1.84rem;
     border: none;
     border-radius: 50%;
     background: transparent;
     color: inherit;
-    font-size: 1rem;
+    font-size: var(--font-size-base);
     line-height: 1;
     cursor: pointer;
 
@@ -70,9 +70,9 @@
   display: flex;
   flex-wrap: wrap;
   align-items: center;
-  gap: 0.4rem;
-  margin-top: 0.55rem;
-  font-size: 0.8125rem;
+  gap: var(--space-2);
+  margin-top: var(--space-2);
+  font-size: var(--font-size-sm);
   color: var(--text-subtle);
 
   button {
@@ -80,8 +80,8 @@
     border: 1px dashed var(--border-strong);
     background: transparent;
     color: var(--text-muted);
-    padding: 0.15rem 0.6rem;
-    font-size: 0.8125rem;
+    padding: var(--space-1) var(--space-2);
+    font-size: var(--font-size-sm);
     cursor: pointer;
 
     &:hover {

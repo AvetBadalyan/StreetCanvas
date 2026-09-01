@@ -145,17 +145,34 @@
   --font-display: "Space Grotesk", "Segoe UI", sans-serif;
   --font-body: "Inter", "Segoe UI", sans-serif;
 
+  --font-size-xs: 1.2rem;
+  --font-size-sm: 1.4rem;
+  --font-size-base: 1.6rem;
+  --font-size-lg: 2rem;
+  --font-size-xl: 2.4rem;
+  --font-size-2xl: 3.2rem;
+
+  // --- Spacing --------------------------------------------------------------
+  // A single 4px-based scale for every padding, margin and gap, so a spacing
+  // choice is "pick a step" rather than a new number each time.
+  --space-1: 0.4rem;
+  --space-2: 0.8rem;
+  --space-3: 1.2rem;
+  --space-4: 1.6rem;
+  --space-5: 2.4rem;
+  --space-6: 3.2rem;
+  --space-7: 4.8rem;
+  --space-8: 6.4rem;
+
   // --- Shape --------------------------------------------------------------
-  --radius-sm: 6px;
   --radius: 10px;
-  --radius-lg: 16px;
   --radius-pill: 999px;
 
   // --- Motion -------------------------------------------------------------
   --transition: 160ms cubic-bezier(0.4, 0, 0.2, 1);
 
-  --header-height: 4.25rem;
-  --content-max: 76rem;
+  --header-height: 6.8rem;
+  --content-max: 121.6rem;
 }
 
 // Respect the OS setting rather than animating regardless.

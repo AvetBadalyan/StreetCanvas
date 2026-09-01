@@ -4,7 +4,7 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  gap: 0.5rem;
+  gap: var(--space-2);
   font: inherit;
   font-weight: 600;
   letter-spacing: 0.01em;
@@ -29,18 +29,18 @@
 // --- Sizes ------------------------------------------------------------------
 
 .button--small {
-  padding: 0.35rem 0.75rem;
-  font-size: 0.8125rem;
+  padding: var(--space-1) var(--space-3);
+  font-size: var(--font-size-sm);
 }
 
 .button--medium {
-  padding: 0.6rem 1.15rem;
-  font-size: 0.9375rem;
+  padding: var(--space-2) var(--space-4);
+  font-size: var(--font-size-base);
 }
 
 .button--large {
-  padding: 0.8rem 1.6rem;
-  font-size: 1rem;
+  padding: var(--space-3) var(--space-5);
+  font-size: var(--font-size-base);
 }
 
 .button--full {
@@ -83,7 +83,7 @@
 .button--quiet {
   background: transparent;
   color: var(--text-muted);
-  padding-inline: 0.5rem;
+  padding-inline: var(--space-2);
 
   &:hover:not(:disabled) {
     color: var(--accent);

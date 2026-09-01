@@ -3,7 +3,7 @@
 .explore__header {
   display: flex;
   flex-direction: column;
-  gap: 1.25rem;
+  gap: var(--space-5);
 
   @include desktop {
     flex-direction: row;
@@ -13,9 +13,9 @@
 }
 
 .explore__map {
-  height: min(70vh, 34rem);
+  height: min(70vh, 54.4rem);
   border: 1px solid var(--border);
-  border-radius: var(--radius-lg);
+  border-radius: var(--radius);
   overflow: hidden;
 }
 

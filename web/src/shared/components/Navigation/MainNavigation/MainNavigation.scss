@@ -15,17 +15,17 @@
 .main-header__inner {
   display: flex;
   align-items: center;
-  gap: 1rem;
+  gap: var(--space-4);
   height: 100%;
   max-width: var(--content-max);
   margin: 0 auto;
-  padding: 0 1rem;
+  padding: 0 var(--space-4);
 }
 
 .main-nav__brand {
   display: flex;
   align-items: center;
-  gap: 0.6rem;
+  gap: var(--space-2);
   text-decoration: none;
   color: var(--text);
   margin-right: auto;
@@ -35,20 +35,20 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 2rem;
-  height: 2rem;
-  border-radius: var(--radius-sm);
+  width: 3.2rem;
+  height: 3.2rem;
+  border-radius: var(--radius);
   background: var(--accent);
   color: var(--accent-contrast);
   font-family: var(--font-display);
   font-weight: 700;
-  font-size: 0.8125rem;
+  font-size: var(--font-size-sm);
   letter-spacing: -0.02em;
 }
 
 .main-nav__wordmark {
   font-family: var(--font-display);
-  font-size: 1.15rem;
+  font-size: var(--font-size-lg);
   font-weight: 500;
   letter-spacing: -0.02em;
 
@@ -62,8 +62,8 @@
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  width: 1.5rem;
-  height: 1.05rem;
+  width: 2.4rem;
+  height: 1.68rem;
   padding: 0;
   background: transparent;
   border: none;
@@ -73,7 +73,7 @@
     display: block;
     height: 2px;
     width: 100%;
-    border-radius: 2px;
+    border-radius: var(--radius-pill);
     background: var(--text);
   }
 
@@ -92,5 +92,5 @@
 
 .main-nav__drawer {
   height: 100%;
-  padding: 1.5rem 1.25rem;
+  padding: var(--space-5) var(--space-5);
 }
