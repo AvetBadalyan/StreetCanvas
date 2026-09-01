@@ -1,6 +1,7 @@
 {
   "name": "wander-armenia-web",
   "version": "2.0.0",
+  "description": "React + Vite web app for Wander Armenia - browse, filter and plan visits to places worth seeing in Armenia.",
   "private": true,
   "type": "module",
   "dependencies": {
@@ -14,18 +15,6 @@
     "dev": "vite",
     "build": "vite build",
     "preview": "vite preview"
-  },
-  "browserslist": {
-    "production": [
-      ">0.2%",
-      "not dead",
-      "not op_mini all"
-    ],
-    "development": [
-      "last 1 chrome version",
-      "last 1 firefox version",
-      "last 1 safari version"
-    ]
   },
   "devDependencies": {
     "@vitejs/plugin-react": "^5.1.1",
