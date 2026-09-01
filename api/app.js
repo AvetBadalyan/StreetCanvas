@@ -157,6 +157,16 @@ app.use((error, req, res, next) => {
     return res.status(400).json({ message: "The upload could not be processed." });
   }
 
+  // express.json() throws these for a malformed or oversized body, before any
+  // route or validator runs. `type` is body-parser's own error code, unlike
+  // `status` - safer to key off because nothing else in this app sets it.
+  if (error.type === "entity.parse.failed") {
+    return res.status(400).json({ message: "That request body is not valid JSON." });
+  }
+  if (error.type === "entity.too.large") {
+    return res.status(413).json({ message: "That request body is too large." });
+  }
+
   // Only HttpError carries a status. Reading a status off any error would be
   // unsafe: Mongo puts its own codes on `err.code` (11000 for a duplicate key).
   const status = error instanceof HttpError ? error.status : 500;
