@@ -12,11 +12,8 @@
 }
 
 html {
-  // 62.5% of the browser default (16px) is 10px, so every rem in this
-  // codebase reads directly as a multiple of 10px (2.4rem = 24px) without a
-  // lookup table. Still relative to the browser's setting, so a visitor's own
-  // font-size preference (accessibility zoom) is respected, unlike a fixed
-  // 10px would be.
+  // 62.5% of the 16px default is 10px, so 2.4rem reads as 24px. A percentage
+  // rather than a fixed 10px keeps the visitor's own font-size preference.
   font-size: 62.5%;
   font-family: var(--font-body);
   -webkit-font-smoothing: antialiased;
@@ -96,7 +93,8 @@ main {
   text-align: center;
 }
 
-// Visible only to screen readers.
+// Removed from the visual layout without display:none, which would hide it from
+// screen readers too.
 .sr-only {
   position: absolute;
   width: 1px;

@@ -4,7 +4,7 @@ import { useParams, useNavigate } from "react-router-dom";
 import { fetchPlace, updatePlace } from "../../shared/api/places";
 import { useHttpClient } from "../../shared/hooks/http-hook";
 import { useTagSuggestions } from "../../shared/hooks/use-tag-suggestions";
-import { useAuthContext } from "../../shared/context/auth-context";
+import { useAuth } from "../../shared/context/auth-context";
 import PlaceForm from "../components/PlaceForm/PlaceForm";
 import ErrorModal from "../../shared/components/UIElements/ErrorModal";
 import EmptyState from "../../shared/components/UIElements/EmptyState/EmptyState";
@@ -13,7 +13,7 @@ import Button from "../../shared/components/FormElements/Button/Button";
 
 const EditPlace = () => {
   const { placeId } = useParams();
-  const auth = useAuthContext();
+  const auth = useAuth();
   const navigate = useNavigate();
 
   const { isLoading, error, run, clearError } = useHttpClient();

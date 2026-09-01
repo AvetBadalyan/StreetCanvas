@@ -1,9 +1,7 @@
 // Design tokens.
 //
 // Everything visual resolves to a custom property declared here, so a colour is
-// changed in one place rather than hunted through twenty stylesheets. The old
-// version of this app hardcoded hex values (and a handful of `$color_1`-style
-// variables) inside each component.
+// changed in one place rather than hunted through twenty stylesheets.
 //
 // The names are semantic (`--surface`, not `--grey-800`), so a component never
 // needs to know which theme is active - it asks for "the raised surface colour"
@@ -51,18 +49,18 @@
   --shadow: 0 4px 16px rgba(0, 0, 0, 0.45);
   --shadow-lg: 0 16px 48px rgba(0, 0, 0, 0.55);
 
-  // Translucent layers. These were hardcoded rgba() values in each component,
-  // which is exactly why the header stayed dark in light mode.
+  // Translucent layers have to be tokens: a hardcoded rgba() cannot follow the
+  // theme.
   --header-bg: rgba(23, 23, 31, 0.82);
   --scrim: rgba(6, 6, 10, 0.72);
-  --overlay: rgba(14, 14, 19, 0.72);
-  --empty-bg: rgba(23, 23, 31, 0.4);
+  --busy-veil: rgba(14, 14, 19, 0.72);
+  --surface-sunken: rgba(23, 23, 31, 0.4);
   --map-attribution-bg: rgba(14, 14, 19, 0.8);
 
   --accent-ring: rgba(129, 140, 248, 0.3);
   --danger-border: rgba(239, 68, 68, 0.4);
   --danger-ring: rgba(239, 68, 68, 0.18);
-  --on-danger: #ffffff;
+  --danger-contrast: #ffffff;
 
   // OpenStreetMap only publishes a light basemap, so it is inverted here.
   --map-tile-filter: invert(1) hue-rotate(180deg) brightness(0.92) contrast(0.88)
@@ -107,14 +105,14 @@
 
   --header-bg: rgba(255, 255, 255, 0.85);
   --scrim: rgba(16, 16, 29, 0.45);
-  --overlay: rgba(255, 255, 255, 0.75);
-  --empty-bg: rgba(255, 255, 255, 0.6);
+  --busy-veil: rgba(255, 255, 255, 0.75);
+  --surface-sunken: rgba(255, 255, 255, 0.6);
   --map-attribution-bg: rgba(255, 255, 255, 0.85);
 
   --accent-ring: rgba(79, 70, 229, 0.25);
   --danger-border: rgba(220, 38, 38, 0.35);
   --danger-ring: rgba(220, 38, 38, 0.16);
-  --on-danger: #ffffff;
+  --danger-contrast: #ffffff;
 
   // The basemap is already light; leave it alone.
   --map-tile-filter: none;

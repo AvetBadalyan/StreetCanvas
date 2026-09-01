@@ -14,4 +14,4 @@ export const ServerStatusContext = createContext({
   retry: () => {},
 });
 
-export const useServerStatusContext = () => useContext(ServerStatusContext);
+export const useServerStatus = () => useContext(ServerStatusContext);

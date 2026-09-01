@@ -1,6 +1,4 @@
 // Single place that knows where the API lives and what a failure looks like.
-// Previously every page interpolated a backend URL from env inline,
-// so a change to the URL shape meant editing a dozen components.
 
 // Vite exposes env vars prefixed with VITE_ on `import.meta.env`. Anything here
 // is compiled into the bundle and publicly readable - never a secret.

@@ -1,11 +1,7 @@
 /**
- * Tag rules, mirrored from the API.
- *
- * Source of truth is the backend (`util/tags.js` and `models/place.js`); the
- * server re-normalises everything it receives because it cannot trust a client.
- * This copy exists so a tag is accepted or rejected as you type rather than
- * silently rewritten after you submit — the two must agree, or the chip you see
- * is not the tag that gets stored.
+ * Tag rules mirrored from the API (`api/util/tags.js`, `api/models/place.js`),
+ * which stays authoritative. Duplicated so a tag is accepted or rejected as you
+ * type rather than silently rewritten on submit - see NOTES.md.
  */
 export const MAX_TAGS = 8;
 export const MIN_TAG_LENGTH = 2;

@@ -8,18 +8,18 @@ import ThemeToggle from "../../UIElements/ThemeToggle/ThemeToggle";
 import "./MainNavigation.scss";
 
 const MainNavigation = () => {
-  const [drawerIsOpen, setDrawerIsOpen] = useState(false);
+  const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const location = useLocation();
 
   // Navigating from inside the drawer should close it, otherwise it stays open
   // over the page the visitor just asked for.
-  useEffect(() => setDrawerIsOpen(false), [location.pathname]);
+  useEffect(() => setIsDrawerOpen(false), [location.pathname]);
 
   return (
     <>
-      {drawerIsOpen && <Backdrop onClick={() => setDrawerIsOpen(false)} />}
+      {isDrawerOpen && <Backdrop onClick={() => setIsDrawerOpen(false)} />}
 
-      <SideDrawer show={drawerIsOpen} onClick={() => setDrawerIsOpen(false)}>
+      <SideDrawer show={isDrawerOpen} onClick={() => setIsDrawerOpen(false)}>
         <nav className="main-nav__drawer">
           <NavLinks />
         </nav>
@@ -29,9 +29,9 @@ const MainNavigation = () => {
         <div className="main-header__inner">
           <button
             className="main-nav__menu-btn"
-            onClick={() => setDrawerIsOpen(true)}
+            onClick={() => setIsDrawerOpen(true)}
             aria-label="Open menu"
-            aria-expanded={drawerIsOpen}
+            aria-expanded={isDrawerOpen}
           >
             <span />
             <span />

@@ -8,8 +8,8 @@ const inputReducer = (state, action) => {
     case "CHANGE":
       return {
         ...state,
-        value: action.val,
-        isValid: validate(action.val, action.validators),
+        value: action.value,
+        isValid: validate(action.value, action.validators),
       };
     case "TOUCH":
       return { ...state, isTouched: true };
@@ -54,7 +54,7 @@ const Input = ({
   }, [id, value, isValid, onInput]);
 
   const changeHandler = (event) =>
-    dispatch({ type: "CHANGE", val: event.target.value, validators });
+    dispatch({ type: "CHANGE", value: event.target.value, validators });
 
   const touchHandler = () => dispatch({ type: "TOUCH" });
 

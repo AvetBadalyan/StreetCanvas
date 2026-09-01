@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 
-import { useAuthContext } from "../../../shared/context/auth-context";
+import { useAuth } from "../../../shared/context/auth-context";
 import { useSaved } from "../../../shared/context/saved-context";
 import { useTrip } from "../../../trip/trip-context";
 import { useHttpClient } from "../../../shared/hooks/http-hook";
@@ -17,7 +17,7 @@ import Avatar from "../../../shared/components/UIElements/Avatar/Avatar";
 import "./PlaceCard.scss";
 
 const PlaceCard = ({ place, onDeleted, onSelectTag }) => {
-  const auth = useAuthContext();
+  const auth = useAuth();
   const saved = useSaved();
   const trip = useTrip();
   const { isLoading, error, run, clearError } = useHttpClient();
@@ -53,7 +53,7 @@ const PlaceCard = ({ place, onDeleted, onSelectTag }) => {
 
       <Modal
         show={showMap}
-        onCancel={() => setShowMap(false)}
+        onClose={() => setShowMap(false)}
         header={place.title}
         flush
         wide
@@ -81,7 +81,7 @@ const PlaceCard = ({ place, onDeleted, onSelectTag }) => {
 
       <Modal
         show={showConfirm}
-        onCancel={() => setShowConfirm(false)}
+        onClose={() => setShowConfirm(false)}
         header="Delete this place?"
         footer={
           <>
@@ -146,7 +146,7 @@ const PlaceCard = ({ place, onDeleted, onSelectTag }) => {
           )}
         </div>
 
-        <div className="place-card__save">
+        <div className="place-card__controls">
           {auth.isLoggedIn ? (
             <>
               <button
@@ -167,7 +167,7 @@ const PlaceCard = ({ place, onDeleted, onSelectTag }) => {
               </button>
             </>
           ) : (
-            <Link to="/auth" className="place-card__save-prompt">
+            <Link to="/auth" className="place-card__controls-prompt">
               Sign in to save places
             </Link>
           )}

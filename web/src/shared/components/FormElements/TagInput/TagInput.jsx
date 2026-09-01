@@ -22,7 +22,7 @@ const TagInput = ({
 }) => {
   const [tags, setTags] = useState(initialValue);
   const [draft, setDraft] = useState("");
-  const [notice, setNotice] = useState("");
+  const [tagError, setTagError] = useState("");
   const fieldId = useId();
 
   useEffect(() => {
@@ -36,31 +36,31 @@ const TagInput = ({
     if (!tag) return;
 
     if (tag.length < MIN_TAG_LENGTH) {
-      setNotice(`Tags need at least ${MIN_TAG_LENGTH} characters.`);
+      setTagError(`Tags need at least ${MIN_TAG_LENGTH} characters.`);
       return;
     }
     // Without this the chip renders happily and the server drops it on save.
     if (tag.length > MAX_TAG_LENGTH) {
-      setNotice(`Tags can be at most ${MAX_TAG_LENGTH} characters.`);
+      setTagError(`Tags can be at most ${MAX_TAG_LENGTH} characters.`);
       return;
     }
     if (tags.includes(tag)) {
-      setNotice(`"${tag}" is already added.`);
+      setTagError(`"${tag}" is already added.`);
       setDraft("");
       return;
     }
     if (tags.length >= MAX_TAGS) {
-      setNotice(`That is the maximum of ${MAX_TAGS} tags.`);
+      setTagError(`That is the maximum of ${MAX_TAGS} tags.`);
       return;
     }
 
     setTags((current) => [...current, tag]);
     setDraft("");
-    setNotice("");
+    setTagError("");
   };
 
   const removeTag = (tag) =>
-    setTags((current) => current.filter((item) => item !== tag));
+    setTags((current) => current.filter((existing) => existing !== tag));
 
   const keyDownHandler = (event) => {
     if (event.key === "Enter" || event.key === ",") {
@@ -86,7 +86,7 @@ const TagInput = ({
 
       <div className="tag-input__box">
         {tags.map((tag) => (
-          <span className="tag-chip" key={tag}>
+          <span className="tag-input__chip" key={tag}>
             {tag}
             <button
               type="button"
@@ -103,7 +103,7 @@ const TagInput = ({
           onChange={(event) => setDraft(event.target.value)}
           onKeyDown={keyDownHandler}
           onBlur={() => addTag(draft)}
-          placeholder={tags.length ? "" : "stencil, monochrome, portrait"}
+          placeholder={tags.length ? "" : "unesco, hiking, viewpoint"}
           disabled={tags.length >= MAX_TAGS}
         />
       </div>
@@ -120,7 +120,7 @@ const TagInput = ({
       )}
 
       <p className="field__help">
-        {notice || hint || `${tags.length}/${MAX_TAGS} tags`}
+        {tagError || hint || `${tags.length}/${MAX_TAGS} tags`}
       </p>
     </div>
   );

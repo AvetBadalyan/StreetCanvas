@@ -11,7 +11,7 @@ const LoadingSpinner = ({ asOverlay = false, small = false, label = "Loading" })
     />
   );
 
-  return asOverlay ? <div className="spinner__overlay">{spinner}</div> : spinner;
+  return asOverlay ? <div className="spinner-overlay">{spinner}</div> : spinner;
 };
 
 export default LoadingSpinner;

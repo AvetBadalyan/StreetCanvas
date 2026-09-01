@@ -6,7 +6,7 @@ import Button from "../FormElements/Button/Button";
 const ErrorModal = ({ error, onClear, onRetry }) => (
   <Modal
     show={!!error}
-    onCancel={onClear}
+    onClose={onClear}
     header="That didn't work"
     footer={
       <>

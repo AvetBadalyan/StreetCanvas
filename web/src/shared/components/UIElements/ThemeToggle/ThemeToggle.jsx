@@ -1,6 +1,6 @@
 import React from "react";
 
-import { useThemeContext } from "../../../context/theme-context";
+import { useTheme } from "../../../context/theme-context";
 import "./ThemeToggle.scss";
 
 /**
@@ -37,7 +37,7 @@ const MoonIcon = () => (
 );
 
 const ThemeToggle = () => {
-  const { theme, toggleTheme } = useThemeContext();
+  const { theme, toggleTheme } = useTheme();
   const goingTo = theme === "dark" ? "light" : "dark";
 
   return (

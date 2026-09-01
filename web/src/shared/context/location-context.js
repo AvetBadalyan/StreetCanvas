@@ -8,7 +8,7 @@ import { createContext, useContext } from "react";
  * obnoxious. Held at the top of the tree so the permission is requested at most
  * once per visit.
  */
-export const LocationContext = createContext({
+export const UserLocationContext = createContext({
   position: null,
   status: "idle",
   error: null,
@@ -16,4 +16,4 @@ export const LocationContext = createContext({
   clear: () => {},
 });
 
-export const useLocation = () => useContext(LocationContext);
+export const useUserLocation = () => useContext(UserLocationContext);

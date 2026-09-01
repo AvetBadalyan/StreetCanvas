@@ -5,7 +5,7 @@ import { CSSTransition } from "react-transition-group";
 import Backdrop from "../Backdrop/Backdrop";
 import "./Modal.scss";
 
-const ModalOverlay = React.forwardRef((props, ref) => {
+const ModalDialog = React.forwardRef((props, ref) => {
   const content = (
     <div
       ref={ref}
@@ -28,23 +28,23 @@ const ModalOverlay = React.forwardRef((props, ref) => {
     </div>
   );
 
-  return ReactDOM.createPortal(content, document.getElementById("modal-hook"));
+  return ReactDOM.createPortal(content, document.getElementById("modal-root"));
 });
 
 const Modal = (props) => {
   const nodeRef = useRef(null);
 
-  const { show, onCancel } = props;
+  const { show, onClose } = props;
 
-  // Escape should close any dialog; previously only clicking the backdrop did.
+  // Escape should close any dialog, not just a click on the backdrop.
   useEffect(() => {
     if (!show) return;
     const onKeyDown = (event) => {
-      if (event.key === "Escape") onCancel?.();
+      if (event.key === "Escape") onClose?.();
     };
     document.addEventListener("keydown", onKeyDown);
     return () => document.removeEventListener("keydown", onKeyDown);
-  }, [show, onCancel]);
+  }, [show, onClose]);
 
   // Stop the page behind the dialog from scrolling underneath it.
   useEffect(() => {
@@ -58,7 +58,7 @@ const Modal = (props) => {
 
   return (
     <>
-      {show && <Backdrop onClick={onCancel} />}
+      {show && <Backdrop onClick={onClose} />}
       <CSSTransition
         in={show}
         mountOnEnter
@@ -67,7 +67,7 @@ const Modal = (props) => {
         classNames="modal"
         nodeRef={nodeRef}
       >
-        <ModalOverlay {...props} ref={nodeRef} />
+        <ModalDialog {...props} ref={nodeRef} />
       </CSSTransition>
     </>
   );

@@ -29,7 +29,7 @@ const PlaceFilters = ({
   nearby,
 }) => {
   const { q = "", category = "", tag = "", sort = "recent", radius = 25 } = filters;
-  const hasActiveFilter = Boolean(q || category || tag || nearby.isActive);
+  const hasActiveFilters = Boolean(q || category || tag || nearby.isActive);
 
   const update = (patch) => onChange({ ...filters, ...patch, page: 1 });
 
@@ -161,7 +161,7 @@ const PlaceFilters = ({
           {tag && ` · #${tag}`}
           {nearby.isActive && ` · within ${radius} km of you`}
         </span>
-        {hasActiveFilter && (
+        {hasActiveFilters && (
           <button type="button" onClick={onClearFilters}>
             Clear filters
           </button>

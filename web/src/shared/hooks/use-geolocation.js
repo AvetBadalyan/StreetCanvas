@@ -59,7 +59,7 @@ export const useGeolocation = () => {
   }, []);
 
   // Memoized like the other stateful hooks App.jsx feeds into context, so a
-  // re-render of App does not hand LocationContext a new object identity.
+  // re-render of App does not hand UserLocationContext a new object identity.
   return useMemo(
     () => ({ position, status, error, locate, clear }),
     [position, status, error, locate, clear]

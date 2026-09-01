@@ -14,7 +14,6 @@ export const CATEGORIES = [
   { value: "other", label: "Other" },
 ];
 
-// Falls back to the raw value rather than "Other": if the two lists ever drift,
-// showing the unknown slug is more honest than filing it under a real category.
+// Falls back to the raw slug rather than "Other" - see NOTES.md.
 export const labelForCategory = (value) =>
   CATEGORIES.find((category) => category.value === value)?.label || value;

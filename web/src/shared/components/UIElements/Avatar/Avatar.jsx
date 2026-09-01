@@ -8,17 +8,17 @@ import "./Avatar.scss";
  * load - seeded and legacy rows can both point at images that no longer exist.
  */
 const Avatar = ({ image, alt = "", style, className = "" }) => {
-  const [failed, setFailed] = useState(false);
+  const [imageFailed, setImageFailed] = useState(false);
   const src = resolveImageUrl(image);
 
   // A new image (e.g. the contributor changed their avatar) deserves its own
   // chance to load, rather than staying stuck on an earlier failure.
-  useEffect(() => setFailed(false), [src]);
+  useEffect(() => setImageFailed(false), [src]);
 
   return (
     <div className={`avatar ${className}`} style={style}>
-      {src && !failed ? (
-        <img src={src} alt={alt} loading="lazy" onError={() => setFailed(true)} />
+      {src && !imageFailed ? (
+        <img src={src} alt={alt} loading="lazy" onError={() => setImageFailed(true)} />
       ) : (
         <span className="avatar__fallback" aria-hidden="true">
           {alt.trim().charAt(0) || "?"}

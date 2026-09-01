@@ -35,7 +35,7 @@
   }
 }
 
-.tag-chip {
+.tag-input__chip {
   @include chip;
   gap: var(--space-1);
   background: var(--accent-soft);

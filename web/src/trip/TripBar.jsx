@@ -24,29 +24,29 @@ const TripBar = ({ startPoint }) => {
 
   // Recomputed only when the selection or the starting point changes - the
   // ordering is cheap, but it also feeds the map, which is not.
-  const { ordered, km, hours } = useMemo(() => {
+  const { orderedPlaces, km, hours } = useMemo(() => {
     if (!start || trip.places.length === 0) {
-      return { ordered: [], km: 0, hours: 0 };
+      return { orderedPlaces: [], km: 0, hours: 0 };
     }
     const route = orderByNearest(start, trip.places);
-    return { ordered: route, km: totalKm(route), hours: estimateHours(route) };
+    return { orderedPlaces: route, km: totalKm(route), hours: estimateHours(route) };
   }, [start, trip.places]);
 
   const markers = useMemo(
     () =>
-      ordered.map((place, index) => ({
+      orderedPlaces.map((place, index) => ({
         id: place.id,
         lat: place.location.lat,
         lng: place.location.lng,
         title: `${index + 1}. ${place.title}`,
         subtitle: place.region,
       })),
-    [ordered]
+    [orderedPlaces]
   );
 
   if (trip.places.length === 0) return null;
 
-  const mapsUrl = googleMapsUrl(start, ordered);
+  const mapsUrl = googleMapsUrl(start, orderedPlaces);
 
   return (
     <>
@@ -56,7 +56,7 @@ const TripBar = ({ startPoint }) => {
             <div>
               <h2>Your day</h2>
               <p>
-                {ordered.length} {ordered.length === 1 ? "stop" : "stops"} ·{" "}
+                {orderedPlaces.length} {orderedPlaces.length === 1 ? "stop" : "stops"} ·{" "}
                 {km} km · about {hours} h
               </p>
             </div>
@@ -67,7 +67,7 @@ const TripBar = ({ startPoint }) => {
 
           <div className="trip-panel__body">
             <ol className="trip-panel__stops">
-              {ordered.map((place, index) => (
+              {orderedPlaces.map((place, index) => (
                 <li key={place.id}>
                   <span className="trip-panel__index">{index + 1}</span>
                   <img

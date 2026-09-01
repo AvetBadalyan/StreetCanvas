@@ -16,7 +16,7 @@ export const useTagSuggestions = () => {
 
     fetchFacets()
       .then((data) => {
-        if (!cancelled) setSuggestions(data.tags.map((item) => item.tag));
+        if (!cancelled) setSuggestions(data.tags.map((facet) => facet.tag));
       })
       .catch(() => {});
 

@@ -41,7 +41,8 @@ export const useTripState = () => {
 
   const add = useCallback((place) => {
     setPlaces((current) =>
-      current.some((p) => p.id === place.id) || current.length >= MAX_STOPS
+      current.some((existing) => existing.id === place.id) ||
+      current.length >= MAX_STOPS
         ? current
         : [...current, place]
     );
@@ -53,8 +54,8 @@ export const useTripState = () => {
 
   const toggle = useCallback((place) => {
     setPlaces((current) => {
-      if (current.some((p) => p.id === place.id)) {
-        return current.filter((p) => p.id !== place.id);
+      if (current.some((existing) => existing.id === place.id)) {
+        return current.filter((existing) => existing.id !== place.id);
       }
       return current.length >= MAX_STOPS ? current : [...current, place];
     });

@@ -5,7 +5,7 @@ import Avatar from "../../../shared/components/UIElements/Avatar/Avatar";
 import "./ContributorCard.scss";
 
 const ContributorCard = ({ user }) => {
-  const count = user.places?.length ?? 0;
+  const placeCount = user.places?.length ?? 0;
 
   return (
     <li className="contributor-card">
@@ -18,7 +18,7 @@ const ContributorCard = ({ user }) => {
         <div className="contributor-card__info">
           <h2>{user.name}</h2>
           <p>
-            {count} {count === 1 ? "place" : "places"}
+            {placeCount} {placeCount === 1 ? "place" : "places"}
           </p>
         </div>
       </Link>

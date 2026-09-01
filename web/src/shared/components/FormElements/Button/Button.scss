@@ -97,7 +97,7 @@
 
   &:hover:not(:disabled) {
     background: var(--danger);
-    color: var(--on-danger);
+    color: var(--danger-contrast);
     border-color: var(--danger);
   }
 }

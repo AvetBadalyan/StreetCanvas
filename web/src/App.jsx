@@ -4,13 +4,13 @@ import { BrowserRouter, Navigate, Route, Routes } from "react-router-dom";
 import { AuthContext } from "./shared/context/auth-context";
 import { ServerStatusContext } from "./shared/context/server-context";
 import { ThemeContext } from "./shared/context/theme-context";
-import { LocationContext } from "./shared/context/location-context";
+import { UserLocationContext } from "./shared/context/location-context";
 import { SavedContext } from "./shared/context/saved-context";
 import { TripContext } from "./trip/trip-context";
 
-import { useAuth } from "./shared/hooks/auth-hook";
-import { useServerStatus } from "./shared/hooks/use-server-status";
-import { useTheme } from "./shared/hooks/use-theme";
+import { useAuthState } from "./shared/hooks/auth-hook";
+import { useServerStatusState } from "./shared/hooks/use-server-status";
+import { useThemeState } from "./shared/hooks/use-theme";
 import { useGeolocation } from "./shared/hooks/use-geolocation";
 import { useSavedState } from "./shared/hooks/use-saved-state";
 import { useTripState } from "./trip/use-trip-state";
@@ -36,9 +36,9 @@ const RequireAuth = ({ token, isRestoring, children }) => {
 };
 
 const App = () => {
-  const { token, user, userId, login, logout, isRestoring } = useAuth();
-  const { status, elapsed, retry } = useServerStatus();
-  const { theme, toggleTheme, isExplicit } = useTheme();
+  const { token, user, userId, login, logout, isRestoring } = useAuthState();
+  const { status, elapsed, retry } = useServerStatusState();
+  const { theme, toggleTheme, isExplicit } = useThemeState();
   const geo = useGeolocation();
   const trip = useTripState();
   const saved = useSavedState({ token, isLoggedIn: !!token });
@@ -72,7 +72,7 @@ const App = () => {
     <ThemeContext.Provider value={themeValue}>
       <AuthContext.Provider value={authValue}>
         <ServerStatusContext.Provider value={serverValue}>
-          <LocationContext.Provider value={geo}>
+          <UserLocationContext.Provider value={geo}>
             <SavedContext.Provider value={saved}>
               <TripContext.Provider value={trip}>
                 <BrowserRouter>
@@ -124,7 +124,7 @@ const App = () => {
                 </BrowserRouter>
               </TripContext.Provider>
             </SavedContext.Provider>
-          </LocationContext.Provider>
+          </UserLocationContext.Provider>
         </ServerStatusContext.Provider>
       </AuthContext.Provider>
     </ThemeContext.Provider>

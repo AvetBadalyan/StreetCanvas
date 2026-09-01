@@ -13,8 +13,8 @@ const TILE_ATTRIBUTION =
   '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors';
 
 // Leaflet's default marker points at PNGs resolved relative to the CSS, which
-// webpack does not rewrite - the usual result is an invisible marker. A divIcon
-// is styled with our own CSS instead and needs no assets at all.
+// a bundler does not rewrite - the usual result is an invisible marker. A
+// divIcon is styled with our own CSS instead and needs no assets at all.
 const pinIcon = L.divIcon({
   className: "map-pin",
   html: '<span class="map-pin__dot"></span>',

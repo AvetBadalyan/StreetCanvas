@@ -7,7 +7,7 @@ import "./ImageUpload.scss";
 // means a visitor on a slow connection is told immediately instead of after a
 // four-megabyte upload.
 const MAX_BYTES = 4 * 1024 * 1024;
-const ACCEPTED = ["image/png", "image/jpeg", "image/jpg", "image/webp"];
+const ACCEPTED_TYPES = ["image/png", "image/jpeg", "image/jpg", "image/webp"];
 
 const formatSize = (bytes) => {
   const mb = bytes / (1024 * 1024);
@@ -38,7 +38,7 @@ const ImageUpload = ({ id, label = "Photo", hint, onInput }) => {
   const applyFile = (picked) => {
     if (!picked) return;
 
-    if (!ACCEPTED.includes(picked.type)) {
+    if (!ACCEPTED_TYPES.includes(picked.type)) {
       setError("That file type is not supported. Use JPG, PNG or WEBP.");
       setFile(null);
       onInput(id, null, false);
@@ -76,7 +76,7 @@ const ImageUpload = ({ id, label = "Photo", hint, onInput }) => {
         ref={filePickerRef}
         className="sr-only"
         type="file"
-        accept={ACCEPTED.join(",")}
+        accept={ACCEPTED_TYPES.join(",")}
         onChange={(event) => applyFile(event.target.files?.[0])}
       />
 

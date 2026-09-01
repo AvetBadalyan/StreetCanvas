@@ -1,9 +1,6 @@
 /**
  * A tiny validation vocabulary: a field declares the rules it cares about, and
- * `validate` applies them.
- *
- * Only the rules this app actually uses are defined - the original version
- * carried MIN/MAX/FILE variants, two of which `validate` never even handled.
+ * `validate` applies them. Only the rules this app actually uses are defined.
  */
 
 const REQUIRE = "REQUIRE";
@@ -12,8 +9,8 @@ const MAXLENGTH = "MAXLENGTH";
 const EMAIL = "EMAIL";
 
 export const VALIDATOR_REQUIRE = () => ({ type: REQUIRE });
-export const VALIDATOR_MINLENGTH = (val) => ({ type: MINLENGTH, val });
-export const VALIDATOR_MAXLENGTH = (val) => ({ type: MAXLENGTH, val });
+export const VALIDATOR_MINLENGTH = (length) => ({ type: MINLENGTH, length });
+export const VALIDATOR_MAXLENGTH = (length) => ({ type: MAXLENGTH, length });
 export const VALIDATOR_EMAIL = () => ({ type: EMAIL });
 
 export const validate = (value, validators) =>
@@ -24,9 +21,9 @@ export const validate = (value, validators) =>
       case REQUIRE:
         return trimmed.length > 0;
       case MINLENGTH:
-        return trimmed.length >= validator.val;
+        return trimmed.length >= validator.length;
       case MAXLENGTH:
-        return trimmed.length <= validator.val;
+        return trimmed.length <= validator.length;
       case EMAIL:
         return /^\S+@\S+\.\S+$/.test(trimmed);
       default:

@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 
 import { fetchContributors } from "../../shared/api/users";
 import { useHttpClient } from "../../shared/hooks/http-hook";
-import { useServerStatusContext } from "../../shared/context/server-context";
+import { useServerStatus } from "../../shared/context/server-context";
 import ContributorCard from "../components/ContributorCard/ContributorCard";
 import ErrorModal from "../../shared/components/UIElements/ErrorModal";
 import LoadingSpinner from "../../shared/components/UIElements/LoadingSpinner/LoadingSpinner";
@@ -11,7 +11,7 @@ import Button from "../../shared/components/FormElements/Button/Button";
 import "./Contributors.scss";
 
 const Contributors = () => {
-  const { isReady } = useServerStatusContext();
+  const { isReady } = useServerStatus();
   const { isLoading, error, run, clearError } = useHttpClient();
   const [users, setUsers] = useState([]);
 

@@ -4,7 +4,7 @@ import "./EmptyState.scss";
 
 /**
  * Used wherever a list comes back empty. An empty grid with no explanation
- * reads as a bug, which is exactly how the old "no places found" screen felt.
+ * reads as a bug.
  */
 const EmptyState = ({ icon = "▦", title, description, action }) => (
   <div className="empty-state">

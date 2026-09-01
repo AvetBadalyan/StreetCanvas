@@ -8,7 +8,7 @@ import {
 } from "../../../shared/util/validators";
 import { useForm } from "../../../shared/hooks/form-hook";
 import { useHttpClient } from "../../../shared/hooks/http-hook";
-import { useAuthContext } from "../../../shared/context/auth-context";
+import { useAuth } from "../../../shared/context/auth-context";
 import { login as loginRequest, signup } from "../../../shared/api/users";
 import Input from "../../../shared/components/FormElements/Input/Input";
 import ImageUpload from "../../../shared/components/FormElements/ImageUpload/ImageUpload";
@@ -25,7 +25,7 @@ const DEMO_CREDENTIALS = {
 };
 
 const Auth = () => {
-  const auth = useAuthContext();
+  const auth = useAuth();
   const navigate = useNavigate();
   const { isLoading, error, run, clearError } = useHttpClient();
   const [isLoginMode, setIsLoginMode] = useState(true);
@@ -57,15 +57,15 @@ const Auth = () => {
     setIsLoginMode((mode) => !mode);
   };
 
-  const finish = (data) => {
+  const startSession = (session) => {
     auth.login(
       {
-        userId: data.userId,
-        name: data.name,
-        email: data.email,
-        image: data.image,
+        userId: session.userId,
+        name: session.name,
+        email: session.email,
+        image: session.image,
       },
-      data.token
+      session.token
     );
     navigate("/");
   };
@@ -75,7 +75,7 @@ const Auth = () => {
 
     try {
       if (isLoginMode) {
-        const data = await run((options) =>
+        const session = await run((options) =>
           loginRequest(
             {
               email: formState.inputs.email.value,
@@ -84,7 +84,7 @@ const Auth = () => {
             options
           )
         );
-        finish(data);
+        startSession(session);
       } else {
         const formData = new FormData();
         formData.append("name", formState.inputs.name.value);
@@ -92,8 +92,8 @@ const Auth = () => {
         formData.append("password", formState.inputs.password.value);
         formData.append("image", formState.inputs.image.value);
 
-        const data = await run((options) => signup(formData, options));
-        finish(data);
+        const session = await run((options) => signup(formData, options));
+        startSession(session);
       }
     } catch {
       // Surfaced by the error modal.
@@ -102,10 +102,10 @@ const Auth = () => {
 
   const demoLoginHandler = async () => {
     try {
-      const data = await run((options) =>
+      const session = await run((options) =>
         loginRequest(DEMO_CREDENTIALS, options)
       );
-      finish(data);
+      startSession(session);
     } catch {
       // Surfaced by the error modal.
     }

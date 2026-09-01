@@ -112,7 +112,7 @@ const PlaceForm = ({
           label="Kind of place"
           options={CATEGORIES}
           validators={[]}
-          initialValue={initial.category || "monastery"}
+          initialValue={initial.category || CATEGORIES[0].value}
           initialValid
           onInput={inputHandler}
         />

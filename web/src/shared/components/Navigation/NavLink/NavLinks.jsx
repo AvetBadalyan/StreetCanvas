@@ -1,12 +1,12 @@
 import React from "react";
 import { NavLink } from "react-router-dom";
 
-import { useAuthContext } from "../../../context/auth-context";
+import { useAuth } from "../../../context/auth-context";
 import Avatar from "../../UIElements/Avatar/Avatar";
 import "./NavLinks.scss";
 
 const NavLinks = () => {
-  const auth = useAuthContext();
+  const auth = useAuth();
 
   return (
     <ul className="nav-links">

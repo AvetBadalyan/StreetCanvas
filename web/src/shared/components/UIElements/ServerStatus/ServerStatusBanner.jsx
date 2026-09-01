@@ -1,6 +1,6 @@
 import React from "react";
 
-import { useServerStatusContext } from "../../../context/server-context";
+import { useServerStatus } from "../../../context/server-context";
 import Button from "../../FormElements/Button/Button";
 import "./ServerStatusBanner.scss";
 
@@ -8,16 +8,9 @@ import "./ServerStatusBanner.scss";
 // few seconds out is harmless.
 const EXPECTED_BOOT_MS = 20000;
 
-/**
- * Explains a slow or failed API while the rest of the page still renders.
- *
- * The app is deployed on free hosting that does not keep the API running
- * between visits, so the first request in a while pays a cold start. That used
- * to surface as "An Error Occurred! / Failed to fetch", which reads as a broken
- * site rather than a sleeping one.
- */
+/** Explains a slow or failed API while the rest of the page still renders. */
 const ServerStatusBanner = () => {
-  const { status, elapsed, retry } = useServerStatusContext();
+  const { status, elapsed, retry } = useServerStatus();
 
   if (status === "ready" || status === "checking") return null;
 

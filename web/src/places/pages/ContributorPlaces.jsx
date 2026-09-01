@@ -3,8 +3,8 @@ import { useParams, useSearchParams } from "react-router-dom";
 
 import { fetchPlacesByUser } from "../../shared/api/places";
 import { useHttpClient } from "../../shared/hooks/http-hook";
-import { useAuthContext } from "../../shared/context/auth-context";
-import { useServerStatusContext } from "../../shared/context/server-context";
+import { useAuth } from "../../shared/context/auth-context";
+import { useServerStatus } from "../../shared/context/server-context";
 import PlaceGrid from "../components/PlaceGrid/PlaceGrid";
 import Avatar from "../../shared/components/UIElements/Avatar/Avatar";
 import Pagination from "../../shared/components/UIElements/Pagination/Pagination";
@@ -18,8 +18,8 @@ const PAGE_SIZE = 12;
 
 const ContributorPlaces = () => {
   const { userId } = useParams();
-  const auth = useAuthContext();
-  const { isReady } = useServerStatusContext();
+  const auth = useAuth();
+  const { isReady } = useServerStatus();
   const { isLoading, error, run, clearError } = useHttpClient();
 
   const [searchParams, setSearchParams] = useSearchParams();
@@ -51,8 +51,8 @@ const ContributorPlaces = () => {
     load();
   }, [run, isReady, userId, page]);
 
-  const handleDeleted = (deletedId) => {
-    setPlaces((current) => current.filter((item) => item.id !== deletedId));
+  const deletedHandler = (deletedId) => {
+    setPlaces((current) => current.filter((place) => place.id !== deletedId));
     setPagination((current) =>
       current ? { ...current, total: Math.max(0, current.total - 1) } : current
     );
@@ -96,11 +96,7 @@ const ContributorPlaces = () => {
 
       {showSkeleton && <PlaceGridSkeleton count={3} />}
 
-      {/*
-        An empty result here is a normal state, not an error. The API used to
-        return 404 for a contributor with nothing added yet, so every new
-        account was greeted with an error dialog on their own profile.
-      */}
+      {/* An empty result here is a normal state, not an error. */}
       {!showSkeleton && places.length === 0 && (
         <EmptyState
           title={isSelf ? "You haven't added anything yet" : "Nothing here yet"}
@@ -122,7 +118,7 @@ const ContributorPlaces = () => {
       )}
 
       {places.length > 0 && (
-        <PlaceGrid places={places} onDeleted={handleDeleted} />
+        <PlaceGrid places={places} onDeleted={deletedHandler} />
       )}
 
       <Pagination

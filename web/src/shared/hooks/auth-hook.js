@@ -4,7 +4,7 @@ const STORAGE_KEY = "wanderarmenia.auth";
 // Must stay in step with the API's token TTL.
 const TOKEN_TTL_MS = 7 * 24 * 60 * 60 * 1000;
 
-export const useAuth = () => {
+export const useAuthState = () => {
   const [token, setToken] = useState(null);
   const [user, setUser] = useState(null);
   const [expiresAt, setExpiresAt] = useState(null);
@@ -15,19 +15,18 @@ export const useAuth = () => {
 
   const logoutTimer = useRef();
 
-  const login = useCallback((userData, authToken, expiration) => {
-    const expiry = expiration || new Date(Date.now() + TOKEN_TTL_MS);
-
+  // A restored session passes its stored expiry; a fresh sign-in gets a new one.
+  const login = useCallback((userData, authToken, expiresAt = new Date(Date.now() + TOKEN_TTL_MS)) => {
     setToken(authToken);
     setUser(userData);
-    setExpiresAt(expiry);
+    setExpiresAt(expiresAt);
 
     localStorage.setItem(
       STORAGE_KEY,
       JSON.stringify({
         user: userData,
         token: authToken,
-        expiration: expiry.toISOString(),
+        expiresAt: expiresAt.toISOString(),
       })
     );
   }, []);
@@ -57,8 +56,8 @@ export const useAuth = () => {
   useEffect(() => {
     try {
       const stored = JSON.parse(localStorage.getItem(STORAGE_KEY));
-      if (stored?.token && new Date(stored.expiration) > new Date()) {
-        login(stored.user, stored.token, new Date(stored.expiration));
+      if (stored?.token && new Date(stored.expiresAt) > new Date()) {
+        login(stored.user, stored.token, new Date(stored.expiresAt));
       } else if (stored) {
         localStorage.removeItem(STORAGE_KEY);
       }

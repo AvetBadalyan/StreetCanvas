@@ -10,4 +10,4 @@ export const AuthContext = createContext({
   logout: () => {},
 });
 
-export const useAuthContext = () => useContext(AuthContext);
+export const useAuth = () => useContext(AuthContext);

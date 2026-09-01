@@ -23,16 +23,13 @@ const sleep = (ms, signal) =>
 /**
  * Probes the API on mount and keeps retrying while it boots.
  *
- * The problem this solves: the API is deployed on a free tier and is not kept
- * running between visits, so the first request pays a cold start. Every page
- * used to fire its request immediately, fail, and render an "An Error Occurred
- * / Failed to fetch" dialog - which reads as a broken site rather than a
- * sleeping one. Now the app can tell "still starting" apart from "broken" and
- * say so.
+ * The API sleeps on free hosting, so the first request in a while pays a cold
+ * start. Pages wait on `isReady` instead of each failing separately, which is
+ * what lets the app tell "still starting" apart from "broken".
  *
  * @returns {{ status: "checking"|"waking"|"ready"|"offline", elapsed: number, retry: () => void }}
  */
-export const useServerStatus = () => {
+export const useServerStatusState = () => {
   // Only three states are tracked; "waking" is derived below, since it is
   // purely a function of how long "checking" has lasted.
   const [status, setStatus] = useState("checking");

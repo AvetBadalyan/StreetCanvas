@@ -13,4 +13,4 @@ export const ThemeContext = createContext({
   isExplicit: false,
 });
 
-export const useThemeContext = () => useContext(ThemeContext);
+export const useTheme = () => useContext(ThemeContext);

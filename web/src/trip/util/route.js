@@ -82,6 +82,8 @@ export const estimateHours = (orderedPlaces, { avgSpeedKmh = 50, roadFactor = 1.
   return Math.round((driving + stops) * 10) / 10;
 };
 
+const MAX_WAYPOINTS = 8;
+
 /**
  * A Google Maps directions link for the whole route.
  *
@@ -89,8 +91,6 @@ export const estimateHours = (orderedPlaces, { avgSpeedKmh = 50, roadFactor = 1.
  * and needs no key. Google caps the waypoint list, so longer routes are
  * truncated rather than silently producing a broken link.
  */
-const MAX_WAYPOINTS = 8;
-
 export const googleMapsUrl = (start, orderedPlaces) => {
   if (orderedPlaces.length === 0) return null;
 

@@ -4,8 +4,7 @@ import { ApiError, NetworkError } from "../api/client";
 
 /**
  * Turns a thrown error into something worth showing a visitor. A bare
- * "Failed to fetch" - which is what the browser gives you and what this app
- * used to display verbatim - tells them nothing and looks broken.
+ * "Failed to fetch" is what the browser gives you, and it tells them nothing.
  */
 const messageFor = (err) => {
   if (err instanceof NetworkError) {
@@ -62,7 +61,7 @@ export const useHttpClient = () => {
       throw err;
     } finally {
       activeControllers.current = activeControllers.current.filter(
-        (item) => item !== controller
+        (pending) => pending !== controller
       );
       setIsLoading(false);
     }

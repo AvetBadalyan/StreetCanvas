@@ -4,9 +4,9 @@ import { useSearchParams } from "react-router-dom";
 import { fetchPlaces, fetchFacets } from "../../shared/api/places";
 import { useHttpClient } from "../../shared/hooks/http-hook";
 import { useDebounce } from "../../shared/hooks/use-debounce";
-import { useAuthContext } from "../../shared/context/auth-context";
-import { useServerStatusContext } from "../../shared/context/server-context";
-import { useLocation } from "../../shared/context/location-context";
+import { useAuth } from "../../shared/context/auth-context";
+import { useServerStatus } from "../../shared/context/server-context";
+import { useUserLocation } from "../../shared/context/location-context";
 import PlaceFilters from "../components/PlaceFilters/PlaceFilters";
 import PlaceGrid from "../components/PlaceGrid/PlaceGrid";
 import Map from "../../shared/components/UIElements/Map/Map";
@@ -26,9 +26,9 @@ const PAGE_SIZE = 12;
  * view can be linked, bookmarked and restored with the back button.
  */
 const Explore = () => {
-  const auth = useAuthContext();
-  const { isReady } = useServerStatusContext();
-  const geo = useLocation();
+  const auth = useAuth();
+  const { isReady } = useServerStatus();
+  const geo = useUserLocation();
   const [searchParams, setSearchParams] = useSearchParams();
 
   const { isLoading, error, run, clearError } = useHttpClient();
@@ -128,8 +128,8 @@ const Explore = () => {
       .catch(() => setFacets({ tags: [], categories: [], regions: [], total: 0 }));
   }, [isReady]);
 
-  const handleDeleted = (deletedId) => {
-    setPlaces((current) => current.filter((item) => item.id !== deletedId));
+  const deletedHandler = (deletedId) => {
+    setPlaces((current) => current.filter((place) => place.id !== deletedId));
     setPagination((current) =>
       current ? { ...current, total: Math.max(0, current.total - 1) } : current
     );
@@ -166,7 +166,7 @@ const Explore = () => {
     [places]
   );
 
-  const hasFilters = Boolean(filters.q || filters.tag || filters.category || isNearby);
+  const hasActiveFilters = Boolean(filters.q || filters.tag || filters.category || isNearby);
   const showSkeleton = (isLoading || !isReady) && places.length === 0;
 
   return (
@@ -209,16 +209,16 @@ const Explore = () => {
 
       {!showSkeleton && places.length === 0 && (
         <EmptyState
-          title={hasFilters ? "Nothing matches those filters" : "No places yet"}
+          title={hasActiveFilters ? "Nothing matches those filters" : "No places yet"}
           description={
             isNearby
               ? "Nothing catalogued within that distance. Try a wider radius, or turn off “Near me”."
-              : hasFilters
+              : hasActiveFilters
                 ? "Try a broader search, or clear the filters to see everything."
                 : "Be the first to add somewhere worth visiting."
           }
           action={
-            hasFilters ? (
+            hasActiveFilters ? (
               <Button variant="ghost" onClick={clearFilters}>
                 Clear filters
               </Button>
@@ -234,7 +234,7 @@ const Explore = () => {
       {!showSkeleton && places.length > 0 && view === "grid" && (
         <PlaceGrid
           places={places}
-          onDeleted={handleDeleted}
+          onDeleted={deletedHandler}
           onSelectTag={(tag) => applyFilters({ ...filters, tag, page: 1 })}
         />
       )}

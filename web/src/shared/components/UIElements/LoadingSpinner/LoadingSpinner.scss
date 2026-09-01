@@ -17,14 +17,14 @@
   border-width: 2px;
 }
 
-.spinner__overlay {
+.spinner-overlay {
   position: absolute;
   inset: 0;
   z-index: 5;
   display: flex;
   align-items: center;
   justify-content: center;
-  background: var(--overlay);
+  background: var(--busy-veil);
   backdrop-filter: blur(2px);
   border-radius: inherit;
 }

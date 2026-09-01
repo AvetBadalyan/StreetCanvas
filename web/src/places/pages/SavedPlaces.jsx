@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 
 import { fetchMyLists } from "../../shared/api/lists";
 import { useHttpClient } from "../../shared/hooks/http-hook";
-import { useAuthContext } from "../../shared/context/auth-context";
+import { useAuth } from "../../shared/context/auth-context";
 import { useSaved } from "../../shared/context/saved-context";
 import PlaceGrid from "../components/PlaceGrid/PlaceGrid";
 import Button from "../../shared/components/FormElements/Button/Button";
@@ -12,8 +12,8 @@ import { PlaceGridSkeleton } from "../../shared/components/UIElements/Skeleton/S
 import "./SavedPlaces.scss";
 
 const TABS = [
-  { key: "wishlist", label: "Want to go" },
-  { key: "visited", label: "Been there" },
+  { value: "wishlist", label: "Want to go" },
+  { value: "visited", label: "Been here" },
 ];
 
 /**
@@ -24,7 +24,7 @@ const TABS = [
  * rendering the lists needs the places themselves.
  */
 const SavedPlaces = () => {
-  const auth = useAuthContext();
+  const auth = useAuth();
   const saved = useSaved();
   const { isLoading, error, run, clearError } = useHttpClient();
 
@@ -39,8 +39,8 @@ const SavedPlaces = () => {
     if (!auth.token) return;
     const load = async () => {
       try {
-        const data = await run((options) => fetchMyLists({ ...options, token: auth.token }));
-        setLists(data);
+        const fetchedLists = await run((options) => fetchMyLists({ ...options, token: auth.token }));
+        setLists(fetchedLists);
       } catch {
         // Surfaced by the modal.
       }
@@ -63,16 +63,16 @@ const SavedPlaces = () => {
       </header>
 
       <div className="saved-tabs" role="tablist">
-        {TABS.map(({ key, label }) => (
+        {TABS.map(({ value, label }) => (
           <button
-            key={key}
+            key={value}
             role="tab"
-            aria-selected={tab === key}
-            className={tab === key ? "is-active" : ""}
-            onClick={() => setTab(key)}
+            aria-selected={tab === value}
+            className={tab === value ? "is-active" : ""}
+            onClick={() => setTab(value)}
           >
             {label}
-            <span>{lists[key]?.length ?? 0}</span>
+            <span>{lists[value]?.length ?? 0}</span>
           </button>
         ))}
       </div>

@@ -4,12 +4,12 @@ import { useNavigate } from "react-router-dom";
 import { createPlace } from "../../shared/api/places";
 import { useHttpClient } from "../../shared/hooks/http-hook";
 import { useTagSuggestions } from "../../shared/hooks/use-tag-suggestions";
-import { useAuthContext } from "../../shared/context/auth-context";
+import { useAuth } from "../../shared/context/auth-context";
 import PlaceForm from "../components/PlaceForm/PlaceForm";
 import ErrorModal from "../../shared/components/UIElements/ErrorModal";
 
 const NewPlace = () => {
-  const auth = useAuthContext();
+  const auth = useAuth();
   const navigate = useNavigate();
   const { isLoading, error, run, clearError } = useHttpClient();
   const tagSuggestions = useTagSuggestions();

@@ -24,7 +24,7 @@ const systemTheme = () =>
  * `prefers-color-scheme` and follow the operating system - including if the OS
  * switches while the tab is open.
  */
-export const useTheme = () => {
+export const useThemeState = () => {
   const [choice, setChoice] = useState(storedTheme);
   const [systemPreference, setSystemPreference] = useState(systemTheme);
 
