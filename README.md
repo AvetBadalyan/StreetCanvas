@@ -91,7 +91,7 @@ npm run dev
 ## Stack
 
 **API** — Node · Express · MongoDB (Mongoose) · JWT · Cloudinary · Nominatim
-**Web** — React 18 · Vite · React Router 7 · Sass · Leaflet
+**Web** — React 19 · Vite · React Router 7 · Sass · Leaflet
 
 ## Layout
 

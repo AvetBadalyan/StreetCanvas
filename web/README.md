@@ -6,7 +6,7 @@ by kind, region or tag, see what is near you, keep your own lists, and string a
 few of them into a day out.
 
 - **Part of the [Wander Armenia](../README.md) monorepo** — the Express API lives in [`api/`](../api)
-- **Stack:** React 18 · Vite · React Router 7 · Sass · Leaflet
+- **Stack:** React 19 · Vite · React Router 7 · Sass · Leaflet
 - **Live:** https://wanderarmenia.vercel.app · **API:** https://wanderarmenia-api.vercel.app
 - **Demo login:** `demo@wanderarmenia.demo` / `demo1234` (or the one-click button on the auth page)
 - **[Design notes](NOTES.md)** — why the non-obvious parts are the way they are
