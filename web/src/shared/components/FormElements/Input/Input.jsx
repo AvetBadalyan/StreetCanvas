@@ -44,8 +44,9 @@ const Input = ({
   });
 
   const { value, isValid } = inputState;
-  const generatedId = useId();
-  const fieldId = id || generatedId;
+  // `id` is the field's key in useForm's state, not its DOM id - TagInput and
+  // ImageUpload follow the same split, generating their own DOM id with useId.
+  const fieldId = useId();
   const describedBy = `${fieldId}-help`;
 
   useEffect(() => {

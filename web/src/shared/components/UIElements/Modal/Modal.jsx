@@ -58,9 +58,9 @@ const Modal = (props) => {
 
   return (
     <>
-      {props.show && <Backdrop onClick={props.onCancel} />}
+      {show && <Backdrop onClick={onCancel} />}
       <CSSTransition
-        in={props.show}
+        in={show}
         mountOnEnter
         unmountOnExit
         timeout={200}

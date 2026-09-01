@@ -43,7 +43,7 @@ const PlaceForm = ({
       title: { value: initial.title || "", isValid: !isCreate },
       description: { value: initial.description || "", isValid: !isCreate },
       region: { value: initial.region || "", isValid: true },
-      category: { value: initial.category || "monastery", isValid: true },
+      category: { value: initial.category || CATEGORIES[0].value, isValid: true },
       tags: { value: initial.tags || [], isValid: true },
       ...(isCreate
         ? {

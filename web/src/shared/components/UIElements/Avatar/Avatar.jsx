@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 
 import { resolveImageUrl } from "../../../api/client";
 import "./Avatar.scss";
@@ -10,6 +10,10 @@ import "./Avatar.scss";
 const Avatar = ({ image, alt = "", style, className = "" }) => {
   const [failed, setFailed] = useState(false);
   const src = resolveImageUrl(image);
+
+  // A new image (e.g. the contributor changed their avatar) deserves its own
+  // chance to load, rather than staying stuck on an earlier failure.
+  useEffect(() => setFailed(false), [src]);
 
   return (
     <div className={`avatar ${className}`} style={style}>

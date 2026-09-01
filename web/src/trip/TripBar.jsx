@@ -46,7 +46,7 @@ const TripBar = ({ startPoint }) => {
 
   if (trip.places.length === 0) return null;
 
-  const mapsUrl = googleMapsUrl(startPoint, ordered);
+  const mapsUrl = googleMapsUrl(start, ordered);
 
   return (
     <>

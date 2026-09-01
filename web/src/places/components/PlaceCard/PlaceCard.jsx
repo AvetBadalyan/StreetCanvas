@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 
 import { useAuthContext } from "../../../shared/context/auth-context";
@@ -32,6 +32,10 @@ const PlaceCard = ({ place, onDeleted, onSelectTag }) => {
   const isOwner = auth.userId && auth.userId === creator?.id;
   const imageUrl = resolveImageUrl(place.image);
   const inTrip = trip.has(place.id);
+
+  // A place whose photo changes (an edit) deserves its own chance to load,
+  // rather than staying stuck on an earlier failure.
+  useEffect(() => setImageFailed(false), [imageUrl]);
 
   const confirmDelete = async () => {
     setShowConfirm(false);

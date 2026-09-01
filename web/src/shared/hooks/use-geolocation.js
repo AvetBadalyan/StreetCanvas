@@ -1,4 +1,4 @@
-import { useCallback, useState } from "react";
+import { useCallback, useMemo, useState } from "react";
 
 /**
  * The browser's own geolocation, asked for only when the visitor clicks.
@@ -58,5 +58,10 @@ export const useGeolocation = () => {
     setError(null);
   }, []);
 
-  return { position, status, error, locate, clear };
+  // Memoized like the other stateful hooks App.jsx feeds into context, so a
+  // re-render of App does not hand LocationContext a new object identity.
+  return useMemo(
+    () => ({ position, status, error, locate, clear }),
+    [position, status, error, locate, clear]
+  );
 };

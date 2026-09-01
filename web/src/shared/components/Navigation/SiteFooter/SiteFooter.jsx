@@ -21,14 +21,14 @@ const SiteFooter = () => (
       </p>
       <nav>
         <a
-          href="https://github.com/AvetBadalyan/wander-armenia"
+          href="https://github.com/AvetBadalyan/wander-armenia/tree/main/web"
           target="_blank"
           rel="noreferrer"
         >
           Frontend
         </a>
         <a
-          href="https://github.com/AvetBadalyan/wander-armenia"
+          href="https://github.com/AvetBadalyan/wander-armenia/tree/main/api"
           target="_blank"
           rel="noreferrer"
         >
