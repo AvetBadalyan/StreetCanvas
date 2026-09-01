@@ -57,10 +57,9 @@ const placeSchema = new Schema(
         type: [Number],
         required: true,
         validate: {
-          validator: (c) =>
-            c.length === 2 &&
-            c[0] >= -180 && c[0] <= 180 &&
-            c[1] >= -90 && c[1] <= 90,
+          validator: ([lng, lat] = []) =>
+            Number.isFinite(lng) && lng >= -180 && lng <= 180 &&
+            Number.isFinite(lat) && lat >= -90 && lat <= 90,
           message: "Coordinates must be [longitude, latitude] within range.",
         },
       },
@@ -80,8 +79,6 @@ placeSchema.index({ location: "2dsphere" });
 placeSchema.index({ createdAt: -1 });
 placeSchema.index({ creator: 1, createdAt: -1 });
 
-// Present coordinates to the API as { lat, lng } - the shape a reader expects -
-// while storing the GeoJSON the index requires.
 placeSchema.set("toObject", {
   getters: true,
   virtuals: true,

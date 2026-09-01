@@ -11,11 +11,11 @@ const normalizeTags = (raw) => {
 
   const list = Array.isArray(raw) ? raw : String(raw).split(",");
 
-  const cleaned = list
+  const slugs = list
     .map(toSlug)
     .filter((tag) => tag.length >= 2 && tag.length <= 24);
 
-  return [...new Set(cleaned)].slice(0, MAX_TAGS);
+  return [...new Set(slugs)].slice(0, MAX_TAGS);
 };
 
 module.exports = { normalizeTags };

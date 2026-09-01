@@ -10,8 +10,8 @@ const escapeRegex = (value) => value.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
 
 const parsePagination = (query) => {
   const page = Math.max(1, parseInt(query.page, 10) || 1);
-  const requested = parseInt(query.limit, 10) || DEFAULT_LIMIT;
-  const limit = Math.min(MAX_LIMIT, Math.max(1, requested));
+  const requestedLimit = parseInt(query.limit, 10) || DEFAULT_LIMIT;
+  const limit = Math.min(MAX_LIMIT, Math.max(1, requestedLimit));
   return { page, limit, skip: (page - 1) * limit };
 };
 
@@ -31,12 +31,12 @@ const parseNearby = (query) => {
   if (!query.near) return null;
 
   const [lat, lng] = String(query.near).split(",").map(Number);
-  const validLat = Number.isFinite(lat) && lat >= -90 && lat <= 90;
-  const validLng = Number.isFinite(lng) && lng >= -180 && lng <= 180;
-  if (!validLat || !validLng) return null;
+  const isLatInRange = Number.isFinite(lat) && lat >= -90 && lat <= 90;
+  const isLngInRange = Number.isFinite(lng) && lng >= -180 && lng <= 180;
+  if (!isLatInRange || !isLngInRange) return null;
 
-  const requested = parseFloat(query.radius) || DEFAULT_RADIUS_KM;
-  const radiusKm = Math.min(MAX_RADIUS_KM, Math.max(1, requested));
+  const requestedRadiusKm = parseFloat(query.radius) || DEFAULT_RADIUS_KM;
+  const radiusKm = Math.min(MAX_RADIUS_KM, Math.max(1, requestedRadiusKm));
 
   return { lat, lng, radiusKm, radiusMeters: radiusKm * 1000 };
 };

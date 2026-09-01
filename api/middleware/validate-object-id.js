@@ -9,8 +9,8 @@ const HttpError = require("../models/http-error");
  * a 500 for what is really "no such thing". Answering 404 here keeps that check
  * out of every handler that takes an id.
  */
-const validateObjectId = (param, label = "record") => (req, res, next) => {
-  if (!mongoose.isValidObjectId(req.params[param])) {
+const validateObjectId = (paramName, label = "record") => (req, res, next) => {
+  if (!mongoose.isValidObjectId(req.params[paramName])) {
     return next(new HttpError(`Could not find that ${label}.`, 404));
   }
   next();

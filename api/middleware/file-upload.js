@@ -18,8 +18,8 @@ const MAX_FILE_SIZE_BYTES = 4 * 1024 * 1024; // 4 MB
  */
 const fileUpload = multer({
   storage: multer.memoryStorage(),
-  // `limits` takes an options object - passing a bare number (the shape this
-  // file used to have) silently applies no limit at all.
+  // `limits` must be an options object; a bare number is silently ignored and
+  // applies no limit at all.
   limits: { fileSize: MAX_FILE_SIZE_BYTES, files: 1 },
   fileFilter: (req, file, cb) => {
     const isValid = !!MIME_TYPE_MAP[file.mimetype];

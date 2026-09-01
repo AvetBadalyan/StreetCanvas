@@ -30,21 +30,21 @@ const isCloudinaryEnabled = Boolean(
     process.env.CLOUDINARY_API_SECRET
 );
 
-let configured = null;
+let cloudinary = null;
 
 // Loaded on first use rather than at startup: the SDK costs ~110ms to require,
 // and read-only requests should not pay that on a cold serverless instance.
 const getCloudinary = () => {
-  if (!configured) {
-    configured = require("cloudinary").v2;
-    configured.config({
+  if (!cloudinary) {
+    cloudinary = require("cloudinary").v2;
+    cloudinary.config({
       cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
       api_key: process.env.CLOUDINARY_API_KEY,
       api_secret: process.env.CLOUDINARY_API_SECRET,
       secure: true,
     });
   }
-  return configured;
+  return cloudinary;
 };
 
 const uploadToCloudinary = (buffer) =>

@@ -23,9 +23,9 @@ const remember = (key, value) => {
 
 /**
  * Resolves a free-text address to coordinates.
- * Throws an HttpError rather than returning null: a null here used to flow
- * straight into `new Place({ location: null })` and surface as an opaque
- * mongoose validation failure instead of a useful message.
+ * Throws an HttpError rather than returning null: a null would reach
+ * `new Place({ location: null })` and surface as an opaque mongoose validation
+ * failure instead of a useful message.
  */
 const getCoordsForAddress = async (address) => {
   const key = address.trim().toLowerCase();
@@ -37,7 +37,7 @@ const getCoordsForAddress = async (address) => {
     address
   )}`;
 
-  let data;
+  let matches;
   try {
     const response = await fetch(url, {
       headers: { "User-Agent": USER_AGENT, "Accept-Language": "en" },
@@ -47,7 +47,7 @@ const getCoordsForAddress = async (address) => {
     if (!response.ok) {
       throw new Error(`Nominatim responded with ${response.status}`);
     }
-    data = await response.json();
+    matches = await response.json();
   } catch (err) {
     console.error(`[geocoder] lookup failed for "${address}": ${err.message}`);
     throw new HttpError(
@@ -56,7 +56,7 @@ const getCoordsForAddress = async (address) => {
     );
   }
 
-  if (!Array.isArray(data) || data.length === 0) {
+  if (!Array.isArray(matches) || matches.length === 0) {
     throw new HttpError(
       `We could not find "${address}" on the map. Try adding a city or country.`,
       422
@@ -64,8 +64,8 @@ const getCoordsForAddress = async (address) => {
   }
 
   const coordinates = {
-    lat: parseFloat(data[0].lat),
-    lng: parseFloat(data[0].lon),
+    lat: parseFloat(matches[0].lat),
+    lng: parseFloat(matches[0].lon),
   };
 
   if (Number.isNaN(coordinates.lat) || Number.isNaN(coordinates.lng)) {

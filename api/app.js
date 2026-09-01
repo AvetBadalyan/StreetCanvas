@@ -1,7 +1,5 @@
 require("dotenv").config();
 
-const path = require("path");
-
 const express = require("express");
 const mongoose = require("mongoose");
 const helmet = require("helmet");
@@ -16,7 +14,7 @@ const HttpError = require("./models/http-error");
 const { apiLimiter } = require("./middleware/rate-limit");
 const { connectToDatabase } = require("./util/db");
 const { MAX_FILE_SIZE_BYTES } = require("./middleware/file-upload");
-const { formatBytes } = require("./util/format");
+const { formatMegabytes } = require("./util/format");
 const { isCloudinaryEnabled, LOCAL_UPLOAD_DIR } = require("./util/image-store");
 
 const REQUIRED_ENV = ["MONGO_URI", "JWT_KEY"];
@@ -71,7 +69,7 @@ app.use(express.json({ limit: "1mb" }));
 
 // Only reachable when running on a host with a writable disk; on Vercel every
 // upload goes to Cloudinary instead.
-app.use("/uploads/images", express.static(path.join(LOCAL_UPLOAD_DIR)));
+app.use("/uploads/images", express.static(LOCAL_UPLOAD_DIR));
 
 // Opening the API's root in a browser is a reasonable thing to do, so answer
 // with a short index rather than a bare 404.
@@ -111,10 +109,9 @@ app.get("/api/health", (req, res) => {
   // background means the client's next request finds it ready.
   connectToDatabase().catch(() => {});
 
-  const dbStates = ["disconnected", "connected", "connecting", "disconnecting"];
   res.json({
     status: "ok",
-    db: dbStates[mongoose.connection.readyState] || "unknown",
+    db: mongoose.STATES[mongoose.connection.readyState],
     imageStore: isCloudinaryEnabled ? "cloudinary" : "local-disk",
     uptime: Math.round(process.uptime()),
   });
@@ -142,8 +139,8 @@ app.use((req, res, next) => {
   next(new HttpError(`Could not find ${req.method} ${req.originalUrl}.`, 404));
 });
 
-// Uploads are held in memory and only stored once a request has passed
-// validation (see util/image-store.js), so there is nothing to clean up here.
+// Nothing to clean up on the way out: uploads live in memory until a controller
+// decides to store them.
 app.use((error, req, res, next) => {
   if (res.headersSent) {
     return next(error);
@@ -152,7 +149,7 @@ app.use((error, req, res, next) => {
   if (error instanceof multer.MulterError) {
     if (error.code === "LIMIT_FILE_SIZE") {
       return res.status(413).json({
-        message: `That image is too large. Please use a file under ${formatBytes(
+        message: `That image is too large. Please use a file under ${formatMegabytes(
           MAX_FILE_SIZE_BYTES
         )}.`,
       });
