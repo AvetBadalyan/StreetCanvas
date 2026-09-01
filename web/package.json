@@ -6,8 +6,8 @@
   "type": "module",
   "dependencies": {
     "leaflet": "^1.9.4",
-    "react": "^18.3.1",
-    "react-dom": "^18.3.1",
+    "react": "^19.2.8",
+    "react-dom": "^19.2.8",
     "react-router-dom": "^7.18.3",
     "react-transition-group": "^4.4.5"
   },
