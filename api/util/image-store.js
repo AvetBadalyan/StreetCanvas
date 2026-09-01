@@ -76,8 +76,11 @@ const saveToDisk = async (file) => {
     await fs.mkdir(LOCAL_UPLOAD_DIR, { recursive: true });
     await fs.writeFile(path.join(LOCAL_UPLOAD_DIR, filename), file.buffer);
   } catch (err) {
-    // A serverless filesystem is read-only, so this path cannot work in
-    // production. Say so plainly instead of surfacing an EROFS stack trace.
+    // A serverless filesystem is read-only (EROFS), so this path cannot work
+    // in production - say so plainly instead of surfacing a stack trace. Any
+    // other failure (permissions, disk space) is a genuine local bug, so it
+    // is left to bubble up rather than hidden behind the same message.
+    if (err.code !== "EROFS") throw err;
     throw new HttpError(
       "Image uploads are not configured on this server. Set the CLOUDINARY_* environment variables.",
       503

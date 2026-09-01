@@ -25,12 +25,15 @@ const authLimiter = rateLimit({
   handler: handler("Too many attempts. Please try again in 15 minutes."),
 });
 
-// Uploads are the expensive path (geocoding + Cloudinary), so cap them per user.
+// Uploads are the expensive path (geocoding + Cloudinary), so cap them per
+// signed-in user rather than per IP - otherwise everyone behind the same NAT
+// shares one quota. Runs after checkAuth, so req.userData is always set.
 const uploadLimiter = rateLimit({
   windowMs: 60 * 60 * 1000,
   limit: 30,
   standardHeaders: "draft-7",
   legacyHeaders: false,
+  keyGenerator: (req) => req.userData.userId,
   handler: handler("You have added a lot of places in a short time. Please try again later."),
 });
 

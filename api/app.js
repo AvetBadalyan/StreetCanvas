@@ -15,7 +15,7 @@ const listsRoutes = require("./routes/lists-routes");
 const HttpError = require("./models/http-error");
 const { apiLimiter } = require("./middleware/rate-limit");
 const { connectToDatabase } = require("./util/db");
-const { MAX_FILE_SIZE_BYTES } = require("./middleware/file-Upload");
+const { MAX_FILE_SIZE_BYTES } = require("./middleware/file-upload");
 const { formatBytes } = require("./util/format");
 const { isCloudinaryEnabled, LOCAL_UPLOAD_DIR } = require("./util/image-store");
 
@@ -150,13 +150,14 @@ app.use((error, req, res, next) => {
   }
 
   if (error instanceof multer.MulterError) {
-    const message =
-      error.code === "LIMIT_FILE_SIZE"
-        ? `That image is too large. Please use a file under ${formatBytes(
-            MAX_FILE_SIZE_BYTES
-          )}.`
-        : "The upload could not be processed.";
-    return res.status(413).json({ message });
+    if (error.code === "LIMIT_FILE_SIZE") {
+      return res.status(413).json({
+        message: `That image is too large. Please use a file under ${formatBytes(
+          MAX_FILE_SIZE_BYTES
+        )}.`,
+      });
+    }
+    return res.status(400).json({ message: "The upload could not be processed." });
   }
 
   // Only HttpError carries a status. Reading a status off any error would be

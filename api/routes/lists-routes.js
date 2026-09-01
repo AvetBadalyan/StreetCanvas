@@ -21,17 +21,17 @@ router.get("/lists", listsControllers.getMyLists);
 
 router.put(
   "/lists/:list/:pid",
+  validateObjectId("pid", "place"),
   validateList,
   validateRequest,
-  validateObjectId("pid", "place"),
   listsControllers.addToList
 );
 
 router.delete(
   "/lists/:list/:pid",
+  validateObjectId("pid", "place"),
   validateList,
   validateRequest,
-  validateObjectId("pid", "place"),
   listsControllers.removeFromList
 );
 

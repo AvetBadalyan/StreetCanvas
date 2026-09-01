@@ -134,11 +134,23 @@ const getPlaces = asyncHandler(async (req, res) => {
  */
 const shapeAggregated = (doc) => {
   const [lng, lat] = doc.location?.coordinates || [];
+  // Built by hand rather than spread from `doc`, so this matches the plain
+  // find() path exactly - no internal `distanceMeters` or duplicated `_id`.
   return {
-    ...doc,
     id: doc._id.toString(),
+    title: doc.title,
+    description: doc.description,
+    category: doc.category,
+    region: doc.region,
+    year: doc.year,
+    tags: doc.tags,
+    image: doc.image,
     location: { lat, lng },
+    sourceName: doc.sourceName,
+    sourceUrl: doc.sourceUrl,
     creator: { ...doc.creator, id: doc.creator._id.toString() },
+    createdAt: doc.createdAt,
+    updatedAt: doc.updatedAt,
     distanceKm: Math.round((doc.distanceMeters / 1000) * 10) / 10,
   };
 };
@@ -257,7 +269,7 @@ const createPlace = asyncHandler(async (req, res, next) => {
     title,
     description,
     category,
-    region: region?.trim() || address,
+    region: region?.trim() || "Armenia",
     tags: normalizeTags(tags),
     location: Place.toGeoPoint(coordinates),
     image: image.url,
@@ -302,8 +314,8 @@ const updatePlace = asyncHandler(async (req, res, next) => {
     return next(new HttpError("You are not allowed to edit this place.", 403));
   }
 
-  place.title = title;
-  place.description = description;
+  if (title !== undefined) place.title = title;
+  if (description !== undefined) place.description = description;
   if (region !== undefined) place.region = region.trim() || "Armenia";
   if (category !== undefined) place.category = category;
   if (tags !== undefined) place.tags = normalizeTags(tags);

@@ -25,8 +25,11 @@ const authPayload = (user, token) => ({
   token,
 });
 
+// Public: this list feeds the Contributors page, which only ever shows a
+// name, an avatar and a place count, so email is excluded rather than sent
+// and ignored.
 const getUsers = asyncHandler(async (req, res) => {
-  const users = await User.find({}, "-password").sort({ createdAt: -1 });
+  const users = await User.find({}, "-password -email").sort({ createdAt: -1 });
   res.json({ users: users.map((user) => user.toObject({ getters: true })) });
 });
 

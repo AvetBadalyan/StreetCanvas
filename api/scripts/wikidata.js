@@ -7,6 +7,8 @@
  * the catalogue is real rather than invented.
  */
 
+const { toSlug } = require("../util/slug");
+
 const ENDPOINT = "https://query.wikidata.org/sparql";
 const ARMENIA = "Q399";
 
@@ -70,14 +72,6 @@ const cleanLabel = (value) => {
   if (!trimmed || /^Q\d+$/.test(trimmed)) return undefined;
   return trimmed;
 };
-
-const toSlug = (value) =>
-  value
-    .toLowerCase()
-    .replace(/\s+/g, "-")
-    .replace(/[^a-z0-9-]/g, "")
-    .replace(/-{2,}/g, "-")
-    .replace(/^-|-$/g, "");
 
 /** 1215 -> "13th century" */
 const centuryOf = (year) => {
@@ -172,9 +166,10 @@ const toPlace = (folded, category) => {
     sentences.push(description.charAt(0).toUpperCase() + description.slice(1) + ".");
   }
 
+  const century = built && centuryOf(built);
   const tags = [
     isUnesco && "unesco",
-    built && centuryOf(built) && toSlug(centuryOf(built)),
+    century && toSlug(century),
     heritages.size > 0 && "heritage-monument",
     region && toSlug(region.replace(/\s*province$/i, "")),
   ].filter((tag) => tag && tag.length >= 2 && tag.length <= 24);

@@ -55,15 +55,19 @@ const addToList = asyncHandler(async (req, res, next) => {
 });
 
 /** DELETE /api/me/lists/:list/:pid */
-const removeFromList = asyncHandler(async (req, res) => {
+const removeFromList = asyncHandler(async (req, res, next) => {
   const { list, pid } = req.params;
+
+  if (!(await Place.exists({ _id: pid }))) {
+    return next(new HttpError("Could not find a place for that id.", 404));
+  }
 
   await User.updateOne(
     { _id: req.userData.userId },
     { $pull: { [list]: pid } }
   );
 
-  res.json({ place: pid, list: null });
+  res.json({ place: pid, list });
 });
 
 module.exports = { getMyLists, addToList, removeFromList, LISTS };

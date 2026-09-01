@@ -2,7 +2,7 @@ const express = require("express");
 const { check } = require("express-validator");
 
 const usersControllers = require("../controllers/users-controllers");
-const fileUpload = require("../middleware/file-Upload");
+const fileUpload = require("../middleware/file-upload");
 const validateRequest = require("../middleware/validate-request");
 const { authLimiter } = require("../middleware/rate-limit");
 
