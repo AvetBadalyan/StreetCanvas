@@ -14,6 +14,17 @@ Commons contributors.
 
 ![Wander Armenia explore page](docs/screenshot-explore.png)
 
+<table>
+<tr>
+<td width="50%"><img src="docs/screenshot-filtered.png" alt="Filtered by tag and category, with live counts"></td>
+<td width="50%"><img src="docs/screenshot-auth.png" alt="Sign in page with a one-click demo login"></td>
+</tr>
+<tr>
+<td>Filtering by tag and category, with live counts on every option</td>
+<td>Sign in, sign up, or use the one-click demo account</td>
+</tr>
+</table>
+
 ---
 
 ## Run it locally

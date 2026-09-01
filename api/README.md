@@ -46,7 +46,7 @@ so the filters stay meaningful. Free-text tags cover everything else.
 | `GET` | `/api/places/facets` | Tag, category and region counts for the filter UI, plus the collection total. |
 | `GET` | `/api/places/:pid` | Single place. |
 | `GET` | `/api/places/user/:uid` | A contributor and their places. **Returns an empty `places` array** for a contributor with none — an empty profile is a normal state, not a 404. An unknown contributor id is still a 404. |
-| `GET` | `/api/users` | All contributors (never includes password hashes). |
+| `GET` | `/api/users` | All contributors. Excludes `password` and `email` — the Contributors page only ever shows a name, an avatar and a place count. |
 | `POST` | `/api/users/signup` | `multipart/form-data`: `name`, `email`, `password`, `image`. |
 | `POST` | `/api/users/login` | JSON: `email`, `password`. |
 
@@ -55,7 +55,7 @@ so the filters stay meaningful. Free-text tags cover everything else.
 | Method | Path | Notes |
 | --- | --- | --- |
 | `POST` | `/api/places` | `multipart/form-data`: `title`, `description`, `address`, `image`, optional `region`, `category`, `tags` (comma-separated). Geocodes the address, then writes in a transaction. |
-| `PATCH` | `/api/places/:pid` | JSON. Owner only. Photo and location are immutable by design. |
+| `PATCH` | `/api/places/:pid` | JSON, partial — send only the fields you're changing. Owner only. Photo and location are immutable by design. |
 | `DELETE` | `/api/places/:pid` | Owner only. Removes the Cloudinary asset after the transaction commits. |
 | `GET` | `/api/me/lists` | Your `visited` and `wishlist` places, fully populated so the UI needs no second round trip. |
 | `PUT` | `/api/me/lists/:list/:pid` | `list` is `visited` or `wishlist`. Adding to one removes it from the other. |
