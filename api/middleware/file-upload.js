@@ -1,5 +1,6 @@
 const multer = require("multer");
 
+const HttpError = require("../models/http-error");
 const { MIME_TYPE_MAP } = require("../util/image-store");
 
 // Vercel caps a serverless function's request body at 4.5 MB, so anything
@@ -23,7 +24,9 @@ const fileUpload = multer({
   fileFilter: (req, file, cb) => {
     const isValid = !!MIME_TYPE_MAP[file.mimetype];
     cb(
-      isValid ? null : new Error("Only PNG, JPG and WEBP images are allowed."),
+      isValid
+        ? null
+        : new HttpError("Only PNG, JPG and WEBP images are allowed.", 422),
       isValid
     );
   },
